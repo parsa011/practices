@@ -1,0 +1,15 @@
+section .data
+	msg db "Hello, world!\n"
+
+section .text
+	global _start
+
+_start:
+	mov rax,1	;syscall that we want to call , here syscall is sys_write :)
+	mov rdi,1	;used as first arg for sys_write , 'fd' arg
+	mov rsi,msg  ;second arg or our message
+	mov rdx,15   ;third arg for syscall , count
+	syscall	  ;call syscall
+	mov rax,60   ;exit syscall code
+	mov rdi,0	;we pass 0 to rdi as error code
+	syscall
