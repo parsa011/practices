@@ -70,36 +70,29 @@ void parse()
 	if (match(SEMI))
 		advance();
 	else {
-		fprintf(stderr,"%d : missed semicolon\n",lineno);
+		fprintf(stderr,"%d : Missed Semicolon\n",lineno);
 		return;
 	}
-	parse();
 }
 
 void type_decl()
 {
 	get_type();
 	get_name();
-	while (match(WHITESPACE)) {
-		advance();
-		if (match(EQAUL)) {
-			advance();
-			break;
-		} else if (!match(WHITESPACE)) {
-			fprintf(stderr,"%d : equal token expected\n",lineno);
-		}
-	}
+	advance();
+	if (match(SEMI))
+		return;
 }
 
 void get_type()
 {
 	advance();
 	if (type != NUM_OR_ID) {
-		fprintf(stderr,"%d : Identifier expexted\n",lineno);
+		fprintf(stderr,"%d : Identifier Expexted\n",lineno);
 		return;
 	}
 	if (!istype(token)) {
-		fprintf(stderr,"%d : <'%s'> Is not valid type\n",lineno,token);
+		fprintf(stderr,"%d : <'%s'> Is Not Valid Type\n",lineno,token);
 	}
 }
 
@@ -107,7 +100,7 @@ void get_name()
 {
 	advance();
 	if (type != NUM_OR_ID) {
-		fprintf(stderr,"%d : enter valid variable name\n",lineno);
+		fprintf(stderr,"%d : Enter Valid Variable Name\n",lineno);
 		return;
 	}
 }
@@ -143,6 +136,10 @@ void next()
 	char *tokenp = token;
 	if (*p) {
 		offset++;
+		while (isspace(*p)) {
+			offset++;
+			p++;
+		}
 		*tokenp++ = *p;
 		*tokenp++ = 0;
 		switch (*p) {
