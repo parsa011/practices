@@ -47,14 +47,18 @@ void type_decl();
 void get_type();
 void get_name();
 
+/* utils */
+int istype();
+
 int main(int argc,char *argv[])
 {
 	while (1) {
 		readl();
-		do {
-			advance();
-			printf("current token is %d and text is : %s\n",type,token);
-		} while (!match(EOI));
+		parse();
+		//do {
+		//	advance();
+		//	printf("current token is %d and text is : %s\n",type,token);
+		//} while (!match(EOI));
 	}
 
 	return 0;
@@ -65,8 +69,10 @@ void parse()
 	type_decl();
 	if (match(SEMI))
 		advance();
-	else 
+	else {
 		fprintf(stderr,"%d : missed semicolon\n",lineno);
+		return;
+	}
 	parse();
 }
 
@@ -74,15 +80,36 @@ void type_decl()
 {
 	get_type();
 	get_name();
+	while (match(WHITESPACE)) {
+		advance();
+		if (match(EQAUL)) {
+			advance();
+			break;
+		} else if (!match(WHITESPACE)) {
+			fprintf(stderr,"%d : equal token expected\n",lineno);
+		}
+	}
 }
 
 void get_type()
 {
-
+	advance();
+	if (type != NUM_OR_ID) {
+		fprintf(stderr,"%d : Identifier expexted\n",lineno);
+		return;
+	}
+	if (!istype(token)) {
+		fprintf(stderr,"%d : <'%s'> Is not valid type\n",lineno,token);
+	}
 }
 
 void get_name()
 {
+	advance();
+	if (type != NUM_OR_ID) {
+		fprintf(stderr,"%d : enter valid variable name\n",lineno);
+		return;
+	}
 }
 
 int readl()
@@ -106,7 +133,7 @@ int getl(char *line)
 int offset = 0;
 void next()
 {
-	if (offset >= length - 1) {
+	if (offset >= length) {
 		offset = 0;
 		token[0] = 0;
 		type = EOI;
@@ -152,9 +179,13 @@ void next()
 					tokenp--;
 					while (isalnum(*p)) {
 						++offset;
-						p++;
-						*tokenp++ = *p;
+						*tokenp++ = *++p;
 					}
+					if (!isalnum(*tokenp)) {
+						--offset;
+						*--tokenp = 0;
+					}
+					
 					*tokenp++ = 0;
 					type = NUM_OR_ID;
 				}
@@ -175,4 +206,14 @@ void advance()
 {
 	next();
 	lookahead = type;
+}
+
+/* simple check for given text */
+int istype(char *text)
+{
+	if (strcmp(text,"int") == 0) {
+		return 1;
+	} else if (strcmp(text,"float") == 0)
+		return 1;
+	return 0;
 }
