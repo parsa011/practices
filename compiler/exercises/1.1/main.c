@@ -21,6 +21,7 @@ int readl();
 #define	LP			4
 #define RP			5
 #define	NUM_OR_ID	6
+#define BADTOKEN	7
 const char *token_names[]  = {
 	"End of Input",
 	"Semicolon",
@@ -36,6 +37,9 @@ int lookahead = -1;
 int match(int);
 void advance();
 int next();
+
+/* parser */
+void parse();
 
 int main(int argc,char *argv[])
 {
@@ -103,8 +107,11 @@ int next()
 				case ' '  :
 					break;
 				default :
-					if (!isalnum(*p))
+					if (!isalnum(*p)) {
 						fprintf(stderr,"Ignoring illegal input <%c>\n", *p);
+						*token = 0;
+						type = BADTOKEN;
+					}
 					else {
 						tokenp--;
 						while (isalnum(*p)) {
