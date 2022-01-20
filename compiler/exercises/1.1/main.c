@@ -90,8 +90,6 @@ int next()
 			switch (*p) {
 				case EOF : 
 					return EOI;
-				case 'i' : 
-					return SEMI;
 				case '+' : 
 					return PLUS;
 				case '*' : 
@@ -109,8 +107,8 @@ int next()
 				default :
 					if (!isalnum(*p)) {
 						fprintf(stderr,"Ignoring illegal input <%c>\n", *p);
-						*token = 0;
 						type = BADTOKEN;
+						return BADTOKEN;
 					}
 					else {
 						tokenp--;
