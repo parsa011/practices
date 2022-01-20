@@ -3,8 +3,9 @@
 #include <string.h>
 #include <ctype.h>
 
-char *buf;
+char buf[128];
 int length = 0;
+int lineno = 0;
 
 /* current token (no struct :) )*/
 char token[32];
@@ -22,6 +23,8 @@ int readl();
 #define RP			5
 #define	NUM_OR_ID	6
 #define BADTOKEN	7
+#define WHITESPACE	8
+#define EQAUL		9
 const char *token_names[]  = {
 	"End of Input",
 	"Semicolon",
@@ -36,91 +39,126 @@ const char *token_names[]  = {
 int lookahead = -1;
 int match(int);
 void advance();
-int next();
+void next();
 
 /* parser */
 void parse();
+void type_decl();
+void get_type();
+void get_name();
 
 int main(int argc,char *argv[])
 {
-	buf = (char *)malloc(20);
-
-	do {
+	while (1) {
 		readl();
-		type = next();
-		printf("current token is %d and text is : %s\n",type,token);
-	} while (!match(EOI));
+		do {
+			advance();
+			printf("current token is %d and text is : %s\n",type,token);
+		} while (!match(EOI));
+	}
 
 	return 0;
+}
+
+void parse()
+{
+	type_decl();
+	if (match(SEMI))
+		advance();
+	else 
+		fprintf(stderr,"%d : missed semicolon\n",lineno);
+	parse();
+}
+
+void type_decl()
+{
+	get_type();
+	get_name();
+}
+
+void get_type()
+{
+
+}
+
+void get_name()
+{
 }
 
 int readl()
 {
 	printf(">>> ");
 	length = getl(buf);
+	lineno++;
 }
 
 int getl(char *line)
 {
 	int i = 0;
 	int c;
-	while ((c = getchar()) != EOF) {
-		if (c == '\n')
-			break;
+	while ((c = getchar()) != EOF && c != '\n') {
 		line[i++] = c;
 	}
 	line[i] = 0;
 	return i;
 }
 
-int next()
+int offset = 0;
+void next()
 {
-	static int offset = 0;
-	if (offset == length) {
+	if (offset >= length - 1) {
 		offset = 0;
-		token[offset] = 0;
-		return EOI;
+		token[0] = 0;
+		type = EOI;
+		return;
 	}
 	char *p = buf + offset;
 	char *tokenp = token;
-	while (*p) {
-			*tokenp++ = *p;
-			*tokenp++ = 0;
-			length = 1;
-			switch (*p) {
-				case EOF : 
-					return EOI;
-				case '+' : 
-					return PLUS;
-				case '*' : 
-					return TIMES;
-				case '(' : 
-					return LP;
-				case ')' : 
-					return RP;
-				case ';' :
-					return SEMI;
-				case '\n' :
-				case '\t' :
-				case ' '  :
+	if (*p) {
+		offset++;
+		*tokenp++ = *p;
+		*tokenp++ = 0;
+		switch (*p) {
+			case '=' :
+				type = EQAUL;
+				break;
+			case '+' : 
+				type = PLUS;
+				break;
+			case '*' : 
+				type = TIMES;
+				break;
+			case '(' : 
+				type = LP;
+				break;
+			case ')' : 
+				type = RP;
+				break;
+			case ';' :
+				type = SEMI;
+				break;
+			case '\n' :
+			case '\t' :
+			case ' '  :
+				type = WHITESPACE;
+				break;
+			default :
+				if (!isalnum(*p)) {
+					fprintf(stderr,"Ignoring illegal input <%c>\n", *p);
+					type = BADTOKEN;
 					break;
-				default :
-					if (!isalnum(*p)) {
-						fprintf(stderr,"Ignoring illegal input <%c>\n", *p);
-						type = BADTOKEN;
-						return BADTOKEN;
+				}
+				else {
+					tokenp--;
+					while (isalnum(*p)) {
+						++offset;
+						p++;
+						*tokenp++ = *p;
 					}
-					else {
-						tokenp--;
-						while (isalnum(*p)) {
-							p++;
-							*tokenp++ = *p;
-						}
-						length = p - buf;
-						*tokenp++ = 0;
-						return NUM_OR_ID;
-					}
-					break;			
+					*tokenp++ = 0;
+					type = NUM_OR_ID;
+				}
+				break;			
 		}
 		p++;
 	}
@@ -129,11 +167,12 @@ int next()
 int match(int token)
 {
 	if (lookahead == -1)
-		lookahead = next();
+		advance();
 	return lookahead == token;
 }
 
 void advance()
 {
-	lookahead = next();
+	next();
+	lookahead = type;
 }
