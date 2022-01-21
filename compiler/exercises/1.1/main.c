@@ -25,6 +25,8 @@ int readl();
 #define BADTOKEN	7
 #define WHITESPACE	8
 #define EQAUL		9
+#define COMMA		10
+
 const char *token_names[]  = {
 	"End of Input",
 	"Semicolon",
@@ -54,11 +56,11 @@ int main(int argc,char *argv[])
 {
 	while (1) {
 		readl();
-		parse();
-		//do {
-		//	advance();
-		//	printf("current token is %d and text is : %s\n",type,token);
-		//} while (!match(EOI));
+		printf("\t\t%s\n",buf);
+		//parse();
+		do {
+			advance();
+		} while (!match(EOI));
 	}
 
 	return 0;
@@ -67,42 +69,19 @@ int main(int argc,char *argv[])
 void parse()
 {
 	type_decl();
-	if (match(SEMI))
-		advance();
-	else {
-		fprintf(stderr,"%d : Missed Semicolon\n",lineno);
-		return;
-	}
 }
 
 void type_decl()
 {
-	get_type();
-	get_name();
-	advance();
-	if (match(SEMI))
-		return;
 }
 
 void get_type()
 {
-	advance();
-	if (type != NUM_OR_ID) {
-		fprintf(stderr,"%d : Identifier Expexted\n",lineno);
-		return;
-	}
-	if (!istype(token)) {
-		fprintf(stderr,"%d : <'%s'> Is Not Valid Type\n",lineno,token);
-	}
 }
 
 void get_name()
 {
-	advance();
-	if (type != NUM_OR_ID) {
-		fprintf(stderr,"%d : Enter Valid Variable Name\n",lineno);
-		return;
-	}
+
 }
 
 int readl()
@@ -133,7 +112,7 @@ void next()
 		return;
 	}
 	char *p = buf + offset;
-	char *tokenp = token;
+	char *tokenp = &token[0];
 	if (*p) {
 		offset++;
 		while (isspace(*p)) {
@@ -161,14 +140,18 @@ void next()
 			case ';' :
 				type = SEMI;
 				break;
+			case ',' :
+				type = COMMA;
+				break;
 			case '\n' :
 			case '\t' :
 			case ' '  :
 				type = WHITESPACE;
 				break;
 			default :
+				p++;
 				if (!isalnum(*p)) {
-					fprintf(stderr,"Ignoring illegal input <%c>\n", *p);
+					fprintf(stderr,"Ignoring illegal input <%c> offset is %d , length : %d\n", *p,offset,length);
 					type = BADTOKEN;
 					break;
 				}
@@ -176,14 +159,10 @@ void next()
 					tokenp--;
 					while (isalnum(*p)) {
 						++offset;
-						*tokenp++ = *++p;
-					}
-					if (!isalnum(*tokenp)) {
-						--offset;
-						*--tokenp = 0;
+						*tokenp++ = *p++;
 					}
 					
-					*tokenp++ = 0;
+					*tokenp = 0;
 					type = NUM_OR_ID;
 				}
 				break;			
@@ -203,6 +182,7 @@ void advance()
 {
 	next();
 	lookahead = type;
+	printf("token is <'%s'> \t %d\n",token,type);
 }
 
 /* simple check for given text */
