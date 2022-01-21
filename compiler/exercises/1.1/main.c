@@ -80,6 +80,7 @@ void parse()
 void type_decl()
 {
 	get_type();
+	get_name();
 }
 
 void get_type()
@@ -96,7 +97,14 @@ void get_type()
 
 void get_name()
 {
-
+	advance();
+	if (match(NUM_OR_ID)) {
+		if (istype(token)) {
+			fprintf(stderr,"%d : <'%s'> Is Type Name \n",lineno,token);
+		}
+	} else {
+		fprintf(stderr,"%d : <'%s'> Cant be a Variable Name\n",lineno,token);
+	}
 }
 
 int readl()
@@ -120,12 +128,6 @@ int getl(char *line)
 
 void next()
 {
-	if (offset >= length) {
-		offset = 0;
-		token[0] = 0;
-		type = EOI;
-		return;
-	}
 	char *p = buf + offset;
 	char *tokenp = &token[0];
 	if (*p) {
@@ -183,6 +185,10 @@ void next()
 				break;			
 		}
 		p++;
+	} else {
+		offset = 0;
+		token[0] = 0;
+		type = EOI;
 	}
 }
 
