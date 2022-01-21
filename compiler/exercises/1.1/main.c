@@ -38,6 +38,7 @@ const char *token_names[]  = {
 };
 
 /* lexer */
+int offset = 0;
 int lookahead = -1;
 int match(int);
 void advance();
@@ -56,11 +57,10 @@ int main(int argc,char *argv[])
 {
 	while (1) {
 		readl();
-		printf("\t\t%s\n",buf);
-		//parse();
-		do {
-			advance();
-		} while (!match(EOI));
+		parse();
+		//do {
+		//	advance();
+		//} while (!match(EOI));
 	}
 
 	return 0;
@@ -69,14 +69,29 @@ int main(int argc,char *argv[])
 void parse()
 {
 	type_decl();
+	advance();
+	if (match(SEMI)) {
+		advance();
+	} else {
+		fprintf(stderr,"%d : Missed Semicolon\n",lineno);
+	}
 }
 
 void type_decl()
 {
+	get_type();
 }
 
 void get_type()
 {
+	advance();
+	if (match(NUM_OR_ID)) {
+		if (!istype(token)) {
+			fprintf(stderr,"%d : <'%s'> Is Not Valid Type\n",lineno,token);
+		}
+	} else {
+		fprintf(stderr,"%d : Not valid token\n",lineno);
+	}
 }
 
 void get_name()
@@ -89,6 +104,7 @@ int readl()
 	printf(">>> ");
 	length = getl(buf);
 	lineno++;
+	offset = 0;
 }
 
 int getl(char *line)
@@ -102,7 +118,6 @@ int getl(char *line)
 	return i;
 }
 
-int offset = 0;
 void next()
 {
 	if (offset >= length) {
@@ -149,13 +164,13 @@ void next()
 				type = WHITESPACE;
 				break;
 			default :
-				p++;
 				if (!isalnum(*p)) {
-					fprintf(stderr,"Ignoring illegal input <%c> offset is %d , length : %d\n", *p,offset,length);
+					fprintf(stderr,"Ignoring illegal input <%c>\n", *p);
 					type = BADTOKEN;
 					break;
 				}
 				else {
+					p++;
 					tokenp--;
 					while (isalnum(*p)) {
 						++offset;
@@ -182,7 +197,6 @@ void advance()
 {
 	next();
 	lookahead = type;
-	printf("token is <'%s'> \t %d\n",token,type);
 }
 
 /* simple check for given text */
