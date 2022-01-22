@@ -46,12 +46,16 @@ void next();
 
 /* parser */
 void parse();
+
 void type_decl();
-void get_type();
-void get_name();
+void type_qualifier();
+void type_specifier();
+void type_name();
+
 
 /* utils */
-int istype();
+int istype(char *);
+int isqualifier(char *);
 
 int main(int argc,char *argv[])
 {
@@ -60,6 +64,7 @@ int main(int argc,char *argv[])
 		parse();
 		//do {
 		//	advance();
+		//	printf("last token <'%s'>\n",last_token);
 		//} while (!match(EOI));
 	}
 
@@ -79,32 +84,21 @@ void parse()
 
 void type_decl()
 {
-	get_type();
-	get_name();
+	type_qualifier();
+	type_specifier();
+	type_name();
 }
 
-void get_type()
+void type_qualifier()
 {
-	advance();
-	if (match(NUM_OR_ID)) {
-		if (!istype(token)) {
-			fprintf(stderr,"%d : <'%s'> Is Not Valid Type\n",lineno,token);
-		}
-	} else {
-		fprintf(stderr,"%d : Not valid token\n",lineno);
-	}
 }
 
-void get_name()
+void type_specifier()
 {
-	advance();
-	if (match(NUM_OR_ID)) {
-		if (istype(token)) {
-			fprintf(stderr,"%d : <'%s'> Is Type Name \n",lineno,token);
-		}
-	} else {
-		fprintf(stderr,"%d : <'%s'> Cant be a Variable Name\n",lineno,token);
-	}
+}
+
+void type_name()
+{
 }
 
 int readl()
@@ -213,4 +207,14 @@ int istype(char *text)
 	} else if (strcmp(text,"float") == 0)
 		return 1;
 	return 0;
+}
+
+int isqualifier(char *text)
+{
+	if (strcmp(text,"const") == 0) {
+		return 1;
+	} else if (strcmp(text,"volatile") == 0)
+		return 1;
+	return 0;
+
 }
