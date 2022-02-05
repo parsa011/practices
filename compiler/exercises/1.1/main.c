@@ -43,6 +43,7 @@ int lookahead = -1;
 int match(int);
 void advance();
 void next();
+void pushback();
 
 /* parser */
 void parse();
@@ -64,7 +65,7 @@ int main(int argc,char *argv[])
 		parse();
 		//do {
 		//	advance();
-		//	printf("last token <'%s'>\n",last_token);
+		//	printf("token <'%s'>\n",token);
 		//} while (!match(EOI));
 	}
 
@@ -91,14 +92,41 @@ void type_decl()
 
 void type_qualifier()
 {
+    advance();
+    if (!isqualifier(token)) {
+        pushback();
+    }
 }
 
 void type_specifier()
 {
+    advance();
+    if (!istype(token)) {
+        printf("%d : Type expected\n",lineno);
+        exit(EXIT_FAILURE);
+    }
+    while (1) {
+        advance();
+        if (!istype(token)) {
+            pushback();
+            break;
+        }
+    }
 }
 
 void type_name()
 {
+    pushback();
+    advance();
+    if (!istype(token)) {
+        printf("%d : Invalid type <'%s'>\n",lineno,token);
+        return;
+    }
+    advance();
+    if (istype(token) || isqualifier(token)) {
+        printf("%d : Invalid type name\n",lineno);
+        return;
+    }
 }
 
 int readl()
@@ -199,21 +227,23 @@ void advance()
 	lookahead = type;
 }
 
+void pushback()
+{
+    int len = strlen(token);
+    offset -= len;
+}
+
 /* simple check for given text */
 int istype(char *text)
 {
-	if (strcmp(text,"int") == 0) {
-		return 1;
-	} else if (strcmp(text,"float") == 0)
+	if (strcmp(text,"int") == 0 || strcmp(text,"float") == 0 || strcmp(text,"char") == 0)
 		return 1;
 	return 0;
 }
 
 int isqualifier(char *text)
 {
-	if (strcmp(text,"const") == 0) {
-		return 1;
-	} else if (strcmp(text,"volatile") == 0)
+	if (strcmp(text,"const") == 0 || strcmp(text,"volatile") == 0)
 		return 1;
 	return 0;
 
