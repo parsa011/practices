@@ -14,6 +14,15 @@ int type;
 int getl(char *);
 int readl();
 
+char *keywords[] = {
+    "[Not Valid]",
+    "char",
+    "float",
+    "int",
+    "const",
+    "static"
+};
+
 /* also we can use enums */
 #define EOI			0
 #define SEMI		1
@@ -58,6 +67,10 @@ void type_name();
 int istype(char *);
 int isqualifier(char *);
 
+float calc_matching(char *,char *);
+int get_same_token_name_index(char *);
+int get_lcs(char *,char *);
+
 int main(int argc,char *argv[])
 {
 	while (1) {
@@ -85,22 +98,26 @@ void parse()
 
 void type_decl()
 {
-	type_qualifier();
+    type_qualifier();
 	type_specifier();
 	type_name();
 }
 
 void type_qualifier()
 {
-    advance();
-    if (!isqualifier(token)) {
-        pushback();
+    while (1) {
+        advance();
+        if (!isqualifier(token)) {
+            if (!istype(token)) {
+                printf("%d : Invalid Token <\"%s\"> , maybe <\"%s\">\n",lineno,token,keywords[get_same_token_name_index(token)]);
+            }
+            break;
+        }
     }
 }
 
 void type_specifier()
 {
-    advance();
     if (!istype(token)) {
         printf("%d : Type expected\n",lineno);
         exit(EXIT_FAILURE);
@@ -108,7 +125,6 @@ void type_specifier()
     while (1) {
         advance();
         if (!istype(token)) {
-            pushback();
             break;
         }
     }
@@ -116,16 +132,8 @@ void type_specifier()
 
 void type_name()
 {
-    pushback();
-    advance();
-    if (!istype(token)) {
-        printf("%d : Invalid type <'%s'>\n",lineno,token);
-        return;
-    }
-    advance();
-    if (istype(token) || isqualifier(token)) {
+    if (!match(NUM_OR_ID)) {
         printf("%d : Invalid type name\n",lineno);
-        return;
     }
 }
 
@@ -233,6 +241,46 @@ void pushback()
     offset -= len;
 }
 
+
+int get_lcs(char *s1,char *s2)
+{
+	int res = 0;
+	int s1_bigger = strlen(s1) > strlen(s2);
+	char *longer = s1_bigger ? s1 : s2,*less = !s1_bigger ? s1 : s2;
+	int temp = 0;
+	while (*longer) {
+		if (tolower(*longer++) == tolower(*less++))
+			temp++;
+		else {
+			res += temp;
+			temp = 0;
+		}
+	}
+	if (temp > 0)
+    	res += temp;
+	return res;
+}
+
+float calc_matching(char *s1,char *s2)
+{
+	int lcs = get_lcs(s1,s2);
+	return lcs * 2.0f / (strlen(s1) + strlen(s2));
+}
+
+int get_same_token_name_index(char *token)
+{
+    int len = sizeof(keywords) / sizeof(keywords[0]);
+	int matched = 0;
+	float last_percent = 0;
+    for (int i = 0; i < len; i++) {
+        float current = calc_matching(token,keywords[i]);
+        if (current >= last_percent) {
+            matched = i;
+            last_percent = current;
+        }
+	}    
+	return matched;
+}
 /* simple check for given text */
 int istype(char *text)
 {
@@ -243,7 +291,7 @@ int istype(char *text)
 
 int isqualifier(char *text)
 {
-	if (strcmp(text,"const") == 0 || strcmp(text,"volatile") == 0)
+	if (strcmp(text,"const") == 0 || strcmp(text,"static") == 0)
 		return 1;
 	return 0;
 
