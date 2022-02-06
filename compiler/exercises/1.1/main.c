@@ -96,51 +96,16 @@ void parse()
 	} else {
 		fprintf(stderr,"%d : Missed Semicolon\n",lineno);
 	}
-	while (!match(EOI)) {
-        printf("%d : Invalid token at the end <%s>\n",lineno,token);
-        advance();
-	}
 }
 
 void type_decl()
 {
-    type_qualifier();
 	type_specifier();
-	type_name();
-}
-
-void type_qualifier()
-{
-    while (1) {
-        advance();
-        if (!isqualifier(token)) {
-            if (!istype(token)) {
-                printf("%d : Invalid Token <\"%s\"> , maybe <\"%s\">\n",lineno,token,keywords[get_same_token_name_index(token)]);
-            }
-            break;
-        }
-    }
 }
 
 void type_specifier()
 {
-    if (!istype(token)) {
-        printf("%d : Type expected\n",lineno);
-        exit(EXIT_FAILURE);
-    }
-    while (1) {
-        advance();
-        if (!istype(token)) {
-            break;
-        }
-    }
-}
 
-void type_name()
-{
-    if (!match(NUM_OR_ID)) {
-        printf("%d : Invalid type name\n",lineno);
-    }
 }
 
 int readl()
