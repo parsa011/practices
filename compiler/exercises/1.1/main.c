@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdbool.h>
 
 char buf[128];
 int length = 0;
@@ -53,6 +54,7 @@ int match(int);
 void advance();
 void next();
 void pushback();
+bool iseoi();
 
 /* parser */
 void parse();
@@ -93,6 +95,10 @@ void parse()
 		advance();
 	} else {
 		fprintf(stderr,"%d : Missed Semicolon\n",lineno);
+	}
+	while (!match(EOI)) {
+        printf("%d : Invalid token at the end <%s>\n",lineno,token);
+        advance();
 	}
 }
 
@@ -154,6 +160,11 @@ int getl(char *line)
 	}
 	line[i] = 0;
 	return i;
+}
+
+bool iseoi()
+{
+    return offset == strlen(buf) - 1;
 }
 
 void next()
