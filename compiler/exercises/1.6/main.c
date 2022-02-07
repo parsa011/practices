@@ -69,6 +69,7 @@ void next()
     }
 
     tok->value[0] = *p;
+    tok->value[1] = 0;
     switch (*p) {
       case '(' :
         tok->type = OPEN_PARENTHESIS;
@@ -101,9 +102,10 @@ void next()
           int index = 1;
           temp[0] = *p++;
           while (isdigit(*p)) {
-            temp[++index] = *p++;
+            temp[index++] = *p++;
             lex->offset++;
           }
+          temp[index] = 0;
           strcpy(tok->value,temp);
           tok->type = NUMBER;
           tok->val = atoi(temp);
