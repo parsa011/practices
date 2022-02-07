@@ -4,6 +4,13 @@
 #include <ctype.h>
 #include <string.h>
 
+void expression();
+void expression_prime();
+void term();
+void term_prime();
+void factor();
+void next();
+
 typedef struct lexer_t {
     FILE *file;
     int lineno;
@@ -29,6 +36,7 @@ enum {
     DIV,
     NUMBER,
     POW,
+    SEMI,
     WHITESPACE,
     BAD,
     EOI
@@ -71,6 +79,9 @@ void next()
     tok->value[0] = *p;
     tok->value[1] = 0;
     switch (*p) {
+      case ';' :
+        tok->type = SEMI;
+        break;
       case '(' :
         tok->type = OPEN_PARENTHESIS;
         break;
@@ -157,15 +168,70 @@ int readl()
   return read;
 }
 
+void expression()
+{
+    term();
+    expression_prime();
+}
+
+void expression_prime()
+{
+    if (match(PLUS)) {
+        factor();
+        expression_prime();
+    }
+}
+
+void term()
+{
+    factor();
+    term_prime();
+}
+
+void term_prime()
+{
+    if (match(STAR)) {
+        factor();
+        term_prime();
+    }
+}
+
+void factor()
+{
+    next();
+    if (match(NUMBER)) {
+        next();
+    } else if (match(OPEN_PARENTHESIS)) {
+        expression();
+        if (match(CLOSE_PARENTHESIS))
+            next();
+        else
+            printf("%d : Unclosed Parenthesis\n",lex->lineno);
+    } else
+        printf("%d : Number or Expression expected <'%s'>\n",lex->lineno,tok->value);
+}
+
+void parse()
+{
+    expression();
+    if (match(SEMI))
+        next();
+    else
+        printf("%d : Missed semi\n",lex->lineno);
+    if (!match(EOI))
+        parse();
+}
+
 int main(int argc,char *argv[])
 {
   if (argc < 2) {
     die("enter file name");
   }
   open_file(argv[1]);
-  do {
-    next();
-    printf("val is %s\n",tok->value);
-  } while (!match(EOI));
+  parse();
+  //do {
+  //    next();
+  //    printf("<'%s'>\n",tok->value);
+  //} while (!match(EOI));
   return 0;
 }
