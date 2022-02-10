@@ -1,2 +1,0 @@
-all :
-	gcc main.c `pkgin-config --libs --cflags gtk+4.0`
