@@ -5,8 +5,11 @@
  #define extern_ extern
 #endif
 
+#include "token.h"
+
 extern_ int Line;
 extern_ int Putback;
-extern_ FILE *Infile;
+extern_ FILE *file;
+extern_ struct token Token;
 
 #endif

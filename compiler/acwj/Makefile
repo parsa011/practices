@@ -1,5 +1,2 @@
-scanner: main.c scan.c
-	cc -o scanner -g main.c scan.c
-
-clean:
-	rm -f scanner *.o
+all : main.c token.c parser.c tree.c
+	gcc -g tree.c main.c token.c parser.c -o compiler
