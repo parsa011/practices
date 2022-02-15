@@ -85,7 +85,6 @@ void print_ast(struct ASTnode *n,int offset)
 {
 	print_spaces(offset);
 	printf("%c\n",get_op_title(n->op));
-    
     if (n->left->op == A_INTLIT) {
     	print_spaces(offset + 2);
         printf("%d\n",n->left->intvalue);
