@@ -7,12 +7,14 @@
 
 // Token types
 enum {
-  T_EOF,
-  T_PLUS,
-  T_MINUS,
-  T_STAR,
-  T_SLASH,
-  T_INTLIT
+  T_EOF,                //0
+  T_PLUS,               //1
+  T_MINUS,              //2
+  T_STAR,               //3
+  T_SLASH,              //4
+  T_OPEN_PARENTHESIS,   //5
+  T_CLOSE_PARENTHESIS,  //6
+  T_INTLIT              //7
 };
 
 // AST node types
@@ -21,6 +23,7 @@ enum {
   A_SUBTRACT,
   A_MULTIPLY,
   A_DIVIDE,
+  A_EXPR,
   A_INTLIT
 };
 

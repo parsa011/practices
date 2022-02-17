@@ -106,6 +106,11 @@ int main(int argc,char *argv[])
         usage(argv[0]);
     init();
     open_file(argv[1]);
+    //do {
+        //scan(&Token);
+        //printf("current token in s : %d\n", Token.token);
+        //} while (Token.token != T_EOF);
+    //return 0;
     scan(&Token);
     struct ASTnode *n = binexpr(0);
     print_ast(n,0);

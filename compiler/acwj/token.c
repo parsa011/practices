@@ -92,6 +92,12 @@ int scan(struct token *t) {
   case '/':
     t->token = T_SLASH;
     break;
+  case '(' :
+    t->token = T_OPEN_PARENTHESIS;
+    break;
+  case ')' :
+    t->token = T_CLOSE_PARENTHESIS;
+    break;
   default:
 
     // If it's a digit, scan the
