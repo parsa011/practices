@@ -1,7 +1,6 @@
-#include "token.h"
+#include "defs.h"
 #include "data.h"
 #include "decl.h"
-#include <string.h>
 
 // Lexical scanning
 // Copyright (c) 2019 Warren Toomey, GPL3
@@ -25,7 +24,7 @@ static int next(void) {
     return c;
   }
 
-  c = fgetc(file);		// Read from input file
+  c = fgetc(Infile);		// Read from input file
   if ('\n' == c)
     Line++;			// Increment line count
   return c;
@@ -73,7 +72,7 @@ int scan(struct token *t) {
 
   // Skip whitespace
   c = skip();
-  Token.intvalue = 0;
+
   // Determine the token based on
   // the input character
   switch (c) {
@@ -91,12 +90,6 @@ int scan(struct token *t) {
     break;
   case '/':
     t->token = T_SLASH;
-    break;
-  case '(' :
-    t->token = T_OPEN_PARENTHESIS;
-    break;
-  case ')' :
-    t->token = T_CLOSE_PARENTHESIS;
     break;
   default:
 

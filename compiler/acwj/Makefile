@@ -1,2 +1,13 @@
-all : main.c token.c parser.c tree.c
-	gcc -g tree.c main.c token.c parser.c -o compiler
+comp1: cg.c expr.c gen.c interp.c main.c scan.c tree.c
+	cc -o comp1 -g cg.c expr.c gen.c interp.c main.c scan.c tree.c
+
+clean:
+	rm -f comp1 *.o *.s out
+
+test: comp1
+	./comp1 input01
+	cc -o out out.s
+	./out
+	./comp1 input02
+	cc -o out out.s
+	./out

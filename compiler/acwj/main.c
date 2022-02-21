@@ -1,120 +1,53 @@
-#include "token.h"
+#include "defs.h"
 #define extern_
 #include "data.h"
 #undef extern_
 #include "decl.h"
+#include <errno.h>
 
-void usage(char *name)
-{
-    printf("Usage : %s filename\n",name + 2);
-    exit(0);
+// Compiler setup and top-level execution
+// Copyright (c) 2019 Warren Toomey, GPL3
+
+// Initialise global variables
+static void init() {
+  Line = 1;
+  Putback = '\n';
 }
 
-void panic(char *msg)
-{
-    printf("%s\n",msg);
-    exit(0);
+// Print out a usage if started incorrectly
+static void usage(char *prog) {
+  fprintf(stderr, "Usage: %s infile\n", prog);
+  exit(1);
 }
 
-void open_file(char *name)
-{
-    file = fopen(name,"r");
-    if (!file) {
-        panic("File not found");
-    }
-}
+// Main program: check arguments and print a usage
+// if we don't have an argument. Open up the input
+// file and call scanfile() to scan the tokens in it.
+void main(int argc, char *argv[]) {
+  struct ASTnode *n;
 
-void close()
-{
-    fclose(file);
-}
+  if (argc != 2)
+    usage(argv[0]);
 
-void init()
-{
-    Line = 1;
-    Putback = 0;
-}
+  init();
 
-void print_spaces(int n)
-{
-	while (n--) {
-    	putchar(' ');
-    }
-}
+  // Open up the input file
+  if ((Infile = fopen(argv[1], "r")) == NULL) {
+    fprintf(stderr, "Unable to open %s: %s\n", argv[1], strerror(errno));
+    exit(1);
+  }
 
-char get_op_title(int i)
-{
-	switch(i) {
-    	case A_MULTIPLY : 
-        	return '*';
-        case A_DIVIDE : 
-        	return '/';
-        case A_ADD : 
-        	return '+';
-        case A_SUBTRACT :
-        	return '-';
-    }
-}
+  // Create the output file
+  if ((Outfile = fopen("out.s", "w")) == NULL) {
+    fprintf(stderr, "Unable to create out.s: %s\n", strerror(errno));
+    exit(1);
+  }
 
-int calc_ast(struct ASTnode *n)
-{
-	int left, right;
-    
-    if (n->left) {
-    	left = calc_ast(n->left);
-    }
-    if (n->right) {
-    	right = calc_ast(n->right);
-    }
-    
-    switch (n->op) {
-    	case A_INTLIT:
-        	return n->intvalue;
-    	case A_ADD : 
-        	return left + right;
-        case A_SUBTRACT : 
-        	return left  - right;
-        case A_MULTIPLY :
-        	return left * right;
-        case A_DIVIDE : 
-        	return left / right;
-    }
-}
+  scan(&Token);			// Get the first token from the input
+  n = binexpr(0);		// Parse the expression in the file
+  printf("%d\n", interpretAST(n));	// Calculate the final result
+  generatecode(n);
 
-void print_ast(struct ASTnode *n,int offset)
-{
-	print_spaces(offset);
-	printf("%c\n",get_op_title(n->op));
-    if (n->left->op == A_INTLIT) {
-    	print_spaces(offset + 2);
-        printf("%d\n",n->left->intvalue);
-    } else {
-    	print_ast(n->left,offset + 2);
-    }
-    
-    if (n->right->op == A_INTLIT) {
-    	print_spaces(offset + 2);
-        printf("%d\n",n->right->intvalue);
-    } else {
-    	print_ast(n->right,offset + 2);
-    }
-}
-
-int main(int argc,char *argv[])
-{
-    if (argc < 2)
-        usage(argv[0]);
-    init();
-    open_file(argv[1]);
-    //do {
-        //scan(&Token);
-        //printf("current token in s : %d\n", Token.token);
-        //} while (Token.token != T_EOF);
-    //return 0;
-    scan(&Token);
-    struct ASTnode *n = binexpr(0);
-    print_ast(n,0);
-    printf("result is %d\n",calc_ast(n));
-	close();
-	return 0;
+  fclose(Outfile);
+  exit(0);
 }
