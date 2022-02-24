@@ -6,7 +6,7 @@ struct token_t {
 	int value;
 };
 
-enum token_kind{
+enum token_kind {
 	T_EOF,
 	T_INTLIT,
 	T_PLUS,

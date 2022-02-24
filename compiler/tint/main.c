@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#include "file.h"
+
 struct lexer_t lexer;
 
 void die(char *msg, ...)
@@ -16,8 +18,17 @@ void die(char *msg, ...)
 	exit(2);
 }
 
-int main(int arvc, char *argv[])
+void usage(char *program_name)
 {
-	printf("WORKING\n");
+	printf("Program Usage : %s filename\n",program_name);
+	exit(0);
+}
+
+int main(int argc, char *argv[])
+{
+	if (argc < 2) {
+		usage(argv[0]);
+	}
+	open_file(argv[1]);
 	return 0;
 }

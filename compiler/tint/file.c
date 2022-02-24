@@ -5,7 +5,7 @@ void open_file(char *name)
 {
 	lexer.fp = fopen(name, "r");
 	if (!lexer.fp) {
-		die("File %s Not Found\n", name);
+		die("File %s Not Found", name);
 	}
 }
 
