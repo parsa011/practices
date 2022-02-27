@@ -9,11 +9,11 @@ struct lexer_t {
 	char *filename;
 	short offset;
 	int lineno;
-	struct token_t tok;
+	struct token_t token;
 };
 
 /* get current token */
-#define c_token (lexer.tok)
+#define c_token (lexer.token)
 
 static int putback;
 
@@ -26,11 +26,13 @@ static int scan_int(int);
 static int scan_ident(int, char *, int);
 
 /* skipe whitespaces */
-static void skip();
+static int skip();
 
 /* get next char from lexer file */
 static int next();
 
-int lex(struct token_t *tok);
+int lex();
+
+void set_token_kind(int);
 
 #endif

@@ -30,5 +30,9 @@ int main(int argc, char *argv[])
 		usage(argv[0]);
 	}
 	open_file(argv[1]);
+	do {
+		lex();
+		printf("%d\n", c_token.kind);
+	} while (c_token.kind != T_EOF);
 	return 0;
 }

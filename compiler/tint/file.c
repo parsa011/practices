@@ -20,5 +20,5 @@ void close_file()
 char read_char()
 {
 	assert(lexer.fp);
-
+	return fgetc(lexer.fp);
 }
