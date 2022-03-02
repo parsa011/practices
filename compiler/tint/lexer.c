@@ -53,6 +53,7 @@ void set_token_kind(int kind)
 int lex()
 {
 	int c = skip();
+	c_token.value = 0;
 	if (!c) {
 		return 0;
 	}

@@ -8,3 +8,6 @@ OBJ = main.o lexer.o file.o token.c
 
 tint: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS)
+
+test : tint
+	./tint test/input1

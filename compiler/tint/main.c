@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 	open_file(argv[1]);
 	do {
 		lex();
-		printf("%d\n", c_token.kind);
+		printf("%d\n", c_token.value);
 	} while (c_token.kind != T_EOF);
 	return 0;
 }
