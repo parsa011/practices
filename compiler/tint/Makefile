@@ -1,7 +1,7 @@
 CC=cc
 CFLAGS=-I.
-DEPS = tint.h lexer.h file.h token.h
-OBJ = main.o lexer.o file.o token.c
+DEPS = tint.h lexer.h file.h token.h ast.h parser.h
+OBJ = main.o lexer.o file.o token.c ast.c parser.c
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)

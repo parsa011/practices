@@ -4,6 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define public
+#define private extern
+
 #include "lexer.h"
 
 /* global function and variables */
