@@ -9,7 +9,7 @@ private int operand_precedence(int tokentype)
 {
     int prec = OpPrec[tokentype];
     if (prec == 0) {
-        die("Operand expected");
+        die("Operand expected, Line : %d", lexer.lineno);
     }
     return prec;
 }
@@ -48,7 +48,7 @@ private int arithop(int tokentype)
     }
 }
 
-public struct ASTnode *statements(int ptp)
+public struct ASTnode *bin_expression(int ptp)
 {
     struct ASTnode *left, *right;
 
@@ -56,7 +56,7 @@ public struct ASTnode *statements(int ptp)
 
     int tokentype = c_token.kind;
 
-    if (tokentype == T_EOF)
+    if (tokentype == T_SEMI)
         return left;
 
     while (operand_precedence(tokentype) > ptp) {
@@ -65,7 +65,7 @@ public struct ASTnode *statements(int ptp)
 
         // Recursively call binexpr() with the
         // precedence of our token to build a sub-tree
-        right = statements(OpPrec[tokentype]);
+        right = bin_expression(OpPrec[tokentype]);
 
         // Join that sub-tree with ours. Convert the token
         // into an AST operation at the same time.
@@ -74,9 +74,8 @@ public struct ASTnode *statements(int ptp)
         // Update the details of the current token.
         // If no tokens left, return just the left node
         tokentype = c_token.kind;
-        if (tokentype == T_EOF)
+        if (tokentype == T_SEMI)
             return (left);
-
     }
 
     return left;

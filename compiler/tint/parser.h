@@ -4,6 +4,6 @@
 #include "tint.h"
 #include "ast.h"
 
-public struct ASTnode *statements(int);
+public struct ASTnode *bin_expression(int);
 
 #endif

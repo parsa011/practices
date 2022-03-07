@@ -12,7 +12,8 @@ enum token_kind {
 	T_PLUS,
 	T_DASH,
 	T_STAR,
-	T_SLASH
+	T_SLASH,
+	T_SEMI
 };
 
 #endif

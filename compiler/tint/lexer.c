@@ -61,6 +61,9 @@ int lex()
 		case EOF :
 			set_token_kind(T_EOF);
 			break;
+		case ';' :
+		    set_token_kind(T_SEMI);
+		    break;
 		case '+' :
 			set_token_kind(T_PLUS);
 			break;
