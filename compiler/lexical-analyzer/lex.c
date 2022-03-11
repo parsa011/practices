@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <limits.h>
 #include <stdbool.h>
 
 FILE *fp;
@@ -136,5 +137,6 @@ int main(int argc, char *argv[])
         lex();
 		printf("%d %s\n", lookahead, Token_name[token.type]);
     } while (token.type != T_EOF);
+	printf("INT MAX : %ld\n", LONG_MAX);
     return 0;
 }
