@@ -1,0 +1,4 @@
+exercises 3.6 :
+    Write a piece of software to count the number of times the reserved word if
+    appears in a C program source file. Consider modifying this program to count
+    the number of distinct identifiers used in the program.
