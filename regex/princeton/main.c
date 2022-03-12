@@ -20,10 +20,10 @@ int match(char *regex, char *text)
 int matchstar(int c, char *regex, char *text)
 {
 	do {
-            if (matchhere(regex, text))
-                return 1;
+        if (matchhere(regex, text))
+            return 1;
 	} while (*text && (*text++ == c || c == '.'));
-        return 0;
+    return 0;
 }
 
 /* search for regex at beginning of text */
@@ -42,7 +42,7 @@ int matchhere(char *regex, char *text)
 
 int main(int argc, char *argv[])
 {
-	if (match("a.c", "abd"))
+	if (match("a.*c", "abbbbbc"))
 		printf("Works \n");
 	return 0;
 }

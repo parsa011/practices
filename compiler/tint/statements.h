@@ -1,6 +1,8 @@
 #ifndef _STATEMENTS_H
 # define _STATEMENTS_H
 
-void statements();
+#include "tint.h"
+
+public void statements();
 
 #endif

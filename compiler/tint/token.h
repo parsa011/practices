@@ -13,6 +13,7 @@ enum token_kind {
 	T_DASH,
 	T_STAR,
 	T_SLASH,
+	T_PRINT,
 	T_SEMI
 };
 

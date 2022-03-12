@@ -15,24 +15,26 @@ struct lexer_t {
 /* get current token */
 #define c_token (lexer.token)
 
-static int putback;
+private int putback;
 
-static void put_back(int); 
+private void put_back(int); 
 
 /* scan int */
-static int scan_int(int);
+private int scan_int(int);
 
 /* scan identifier */
-static int scan_ident(int, char *, int);
+private void scan_ident(int);
 
 /* skipe whitespaces */
-static int skip();
+private int skip();
 
 /* get next char from lexer file */
-static int next();
+private int next();
 
-int lex();
+public int lex();
 
-void set_token_kind(int);
+public void set_token_kind(int);
+
+public void match(int, char *);
 
 #endif

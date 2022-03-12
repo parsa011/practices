@@ -4,14 +4,17 @@
 
 #include "file.h"
 
-static int putback;
+int putback;
 
-static void put_back(int c)
+public char Text[31];
+public int Text_len = 0;
+
+private void put_back(int c)
 {
 	putback = c;
 }
 
-static int skip()
+private int skip()
 {
 	int c;
 	do {
@@ -20,7 +23,7 @@ static int skip()
 	return c;
 }
 
-static int next()
+private int next()
 {
 	int c;
 	if (putback) {
@@ -34,7 +37,7 @@ static int next()
 	return c;
 }
 
-static int scan_int(int c)
+private int scan_int(int c)
 {
 	int n = 0;
 	do {
@@ -45,13 +48,21 @@ static int scan_int(int c)
 	return n;
 }
 
-void set_token_kind(int kind)
+private void scan_ident(int c)
+{
+	do {
+		Text[Text_len++] = c;
+		c = read_char();
+	} while (isalpha(c) || c == '_');
+	put_back(c);
+}
+
+public void set_token_kind(int kind)
 {
 	lexer.token.kind = kind;
 }
 
-int lex()
-{
+public int lex() {
 	int c = skip();
 	c_token.value = 0;
 	if (!c) {
@@ -81,8 +92,18 @@ int lex()
 				set_token_kind(T_INTLIT);
 				c_token.value = scan_int(c);
 				break;
+			} else if (isalpha(c) || c == '_') {
+				scan_ident(c);
+				set_token_kind(T_PRINT);
+				break;
 			}
-			die("unreconized character : %c\n", c);
+			die("Unreconized Character : %c\n", c);
 	}
 	return 1;
+}
+
+public void match(int kind, char *msg)
+{
+	if (c_token.kind != kind)
+		die(msg);
 }

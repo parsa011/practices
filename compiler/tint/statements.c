@@ -1,6 +1,5 @@
 #include "statements.h"
 
-#include "tint.h"
 #include "parser.h"
 #include "ast.h"
 
@@ -34,6 +33,8 @@ void statements()
         lex();
         if (c_token.kind == T_EOF)
             break;
+		match(T_PRINT, "Print Token Expected");
+		lex();
         n = bin_expression(0);
         int res = calc_tree(n);
         printf("Res of expr : %d\n", res);
