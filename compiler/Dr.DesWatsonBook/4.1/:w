@@ -1,0 +1,185 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+int lineno = 1;
+int tokentype = -1;
+int value = 0;
+char ch = 0;
+
+enum {
+	T_ADD,
+	T_SUB,
+	T_MULTI,
+	T_DIVIDE,
+	T_SEMI,
+	T_OP,
+	T_CP,
+	T_INTLIT,
+	T_ERROR,
+	T_EOI
+};
+
+FILE *fp;
+int putback = 0;
+
+void open_file(char *name)
+{
+	fp = fopen(name, "r");
+	if (!fp) {
+		fprintf(stderr, "File Not Found : %s\n", name);
+		exit(-1);
+	}
+}
+
+char read_char()
+{
+	int c;
+	if (putback) {
+		c = putback;
+		putback = 0;
+		return c;
+	}
+	c = fgetc(fp);
+	if (c == '\n')
+		lineno++;
+	return c;
+}
+
+void put_back(char c)
+{
+	putback = c;
+}
+
+void skip()
+{
+	int c;
+	do {
+		c = read_char();
+	} while (isspace(c));
+	put_back(c);
+}
+
+char skip_read()
+{
+	skip();
+	return (ch = read_char());
+}
+
+void scan_int(int c)
+{
+	int res = c;
+	do {
+		c = read_char();
+		printf("%c\n", c);
+		res = res * 10 + (c - '0');
+	} while (isdigit(c));
+	put_back(c);
+	value = res;
+}
+
+int lex()
+{
+	int c = skip_read();
+	switch (c) {
+		case EOF :
+			tokentype = T_EOI;
+			return 0;
+		case '+' :
+			tokentype = T_ADD;
+			break;
+		case '*' :
+			tokentype = T_MULTI;
+			break;
+		case '(' :
+			tokentype = T_OP;
+			break;
+		case ')' :
+			tokentype = T_CP;
+			break;
+		default :
+			if (isdigit(c)) {
+				tokentype = T_INTLIT;
+				scan_int(c);
+				break;
+			}
+			fprintf(stderr, "Bad Token %c\n", c);
+			exit(0);
+	}
+	return 1;
+}
+
+// parser
+void expression();
+void addictive();
+
+void match(int type, char *msg)
+{
+	if (tokentype != type) {
+		fprintf(stderr, "%s\n", msg);
+		exit(0);
+	}
+}
+
+int eof()
+{
+	return tokentype == T_EOI;
+}
+
+void factor()
+{
+	lex();
+	if (tokentype == T_OP) {
+		lex();
+		expression();
+		if (tokentype == T_CP) {
+			lex();
+		} else {
+			fprintf(stderr, "Unclosed Parenthesis\n");
+			exit(0);
+		}
+	} else if (tokentype != T_INTLIT) {
+		fprintf(stderr, "Int Literal Expected , But Was <'%c'>\n", ch);
+		exit(0);
+	}
+}
+
+void multi()
+{
+	factor();
+	if (tokentype != T_MULTI);
+		return;
+	multi();
+}
+
+void addictive()
+{
+	multi();
+	if (tokentype != T_ADD)
+		return;
+	addictive();
+}
+
+void expression()
+{
+	addictive();
+}
+
+void state()
+{
+	expression();
+	match(T_SEMI, "Missed Semicolon");
+}
+
+int main(int argc, char *argv[])
+{
+	open_file(argv[1]);
+	lex();
+	state();
+	//do {
+	//	lex();
+	//	printf("%d\n", tokentype);
+	//} while (tokentype != T_EOI);
+	fclose(fp);
+	return 0;
+}

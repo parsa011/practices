@@ -17,7 +17,7 @@ void die(char *msg, ...)
 	vsprintf(buf, msg, ap);
 	va_end(ap);
 	fprintf(stderr, "%s\n", buf);
-	exit(2);
+	exit(-1);
 }
 
 void usage(char *program_name)
