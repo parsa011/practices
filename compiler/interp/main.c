@@ -12,6 +12,7 @@
 
 // global
 void panic(char *, ...);
+#define CHR_T_INT(c) (c - '0')
 
 // file
 void open_file(char *);
@@ -25,7 +26,10 @@ char next_char();
 void skip();
 char skip_next();
 void put_back(char);
-void lex();
+void scan_ident(int);
+int scan_const(int);
+int guess_string_type(char *);
+bool lex();
 
 //parser
 
@@ -34,7 +38,7 @@ void lex();
 
 enum TokenType{
 	T_PLUS,
-	T_MINUS,
+	T_DASH,
 	T_SLASH,
 	T_STAR,
 	T_POW,
@@ -42,9 +46,26 @@ enum TokenType{
 	T_CP,
 	T_INT,
 	T_IDENT,
+	T_CONST,
 	T_SEMI,
 	T_BAD,
 	T_EOI
+};
+
+char *Tokens_str[] = {
+	"T_PLUS",
+	"T_DASH",
+	"T_SLASH",
+	"T_STAR",
+	"T_POW",
+	"T_OP",
+	"T_CP",
+	"T_INT",
+	"T_IDENT",
+	"T_CONST",
+	"T_SEMI",
+	"T_BAD",
+	"T_EOI"
 };
 
 struct Token {
@@ -62,6 +83,9 @@ struct Lexer {
 	int ch;
 	int putback;
 };
+
+char Text[32];
+int Text_len;
 
 //var
 struct Variable *create_var(char *, int);
@@ -166,6 +190,74 @@ char skip_next()
 	skip();
 	return next_char();
 }
+
+int scan_const(int c)
+{
+	int res = CHR_T_INT(c);
+	while (isdigit((c = next_char()))) {
+		res = res * 10 + CHR_T_INT(c);
+	}
+}
+
+void scan_ident(int c)
+{
+	Text_len = 0;
+	Text[Text_len++] = c;
+	while (isalnum((c = next_char())) || c == '_') {
+		Text[Text_len++] = c;
+	}
+	Text[Text_len] = 0;
+}
+
+int guess_string_type(char *s)
+{
+	if (strcmp("int", s) == 0)
+		return T_INT;
+	return T_IDENT;
+}
+
+bool lex()
+{
+	int c = skip_next();
+	switch (c) {
+		case EOF :
+			set_c_token_type(T_EOI);
+			return false;
+		case '+' :
+			set_c_token_type(T_PLUS);
+			break;
+		case '-' :
+			set_c_token_type(T_DASH);
+			break;
+		case '/' :
+			set_c_token_type(T_SLASH);
+			break;
+		case '*' :
+			set_c_token_type(T_STAR);
+			break;
+		case '^' :
+			set_c_token_type(T_POW);
+			break;
+		case '(' :
+			set_c_token_type(T_OP);
+			break;
+		case ')' :
+			set_c_token_type(T_CP);
+			break;
+		default : 
+			if (isdigit(c)) {
+				set_c_token_type(T_CONST);
+				c_token.value = scan_const(c);
+				break;
+			} else if (isalpha(c) || c == '_') {
+				scan_ident(c);
+				set_c_token_type(guess_string_type(Text));
+				break;
+			}
+	}
+}
+
+// main
 
 int main(int argc, char **argv)
 {
