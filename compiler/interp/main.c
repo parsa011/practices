@@ -31,23 +31,32 @@ int scan_const(int);
 int guess_string_type(char *);
 bool lex();
 
+// tree
+struct ASTnode *mkastnode(int, struct ASTnode *, struct ASTnode *, int);
+struct ASTnode *mkastleaf(int, int);
+struct ASTnode *mkastunary(int, struct ASTnode *, int);
+
 //parser
 
 
 // declerations
 
-enum TokenType{
+enum TokenType {
 	T_PLUS,
 	T_DASH,
 	T_SLASH,
 	T_STAR,
 	T_POW,
+
 	T_OP,
 	T_CP,
+
 	T_INT,
+	T_PRINT,
 	T_IDENT,
 	T_CONST,
 	T_SEMI,
+
 	T_BAD,
 	T_EOI
 };
@@ -58,12 +67,16 @@ char *Tokens_str[] = {
 	"T_SLASH",
 	"T_STAR",
 	"T_POW",
+
 	"T_OP",
 	"T_CP",
+
 	"T_INT",
+	"T_PRINT",
 	"T_IDENT",
 	"T_CONST",
 	"T_SEMI",
+
 	"T_BAD",
 	"T_EOI"
 };
@@ -82,6 +95,13 @@ struct Lexer {
 	struct Token token;
 	int ch;
 	int putback;
+};
+
+struct ASTnode {
+	int op;
+	struct ASTnode *left;
+	struct ASTnode *right;
+	int value;
 };
 
 char Text[32];
@@ -207,12 +227,15 @@ void scan_ident(int c)
 		Text[Text_len++] = c;
 	}
 	Text[Text_len] = 0;
+	put_back(c);
 }
 
 int guess_string_type(char *s)
 {
 	if (strcmp("int", s) == 0)
 		return T_INT;
+	else if (strcmp("print", s) == 0)
+		return T_PRINT;
 	return T_IDENT;
 }
 
@@ -244,6 +267,9 @@ bool lex()
 		case ')' :
 			set_c_token_type(T_CP);
 			break;
+		case ';' :
+			set_c_token_type(T_SEMI);
+			break;
 		default : 
 			if (isdigit(c)) {
 				set_c_token_type(T_CONST);
@@ -254,7 +280,34 @@ bool lex()
 				set_c_token_type(guess_string_type(Text));
 				break;
 			}
+			printf("Bad Token <'%c'> \n", c);
 	}
+}
+
+// AST
+struct ASTnode *mkastnode(int op, struct ASTnode *left, struct ASTnode *right, int value)
+{
+	struct ASTnode *n = malloc(sizeof(struct ASTnode));
+	if (!n) {
+		panic("Can't Allocate Memroy, in mkastnode()");
+	}
+
+	n->op = op;
+	n->left = left;
+	n->right = right;
+	n->value = value;
+
+	return n;
+}
+
+struct ASTnode *mkastleaf(int op, int value)
+{
+	return mkastnode(op, NULL, NULL, value);
+}
+
+struct ASTnode *mkastunary(int op, struct ASTnode *left, int value)
+{
+	return mkastnode(op, left, NULL, value);
 }
 
 // main
@@ -263,11 +316,9 @@ int main(int argc, char **argv)
 {
 	init_variables_table();
 	set_program_mode(argc, argv);
-	char c;
-	do { 
-		c = skip_next();
-		printf("%c\n", c);
-	} while (c != EOF);
+	while (lex()) {
+		printf("%s\n", Tokens_str[c_token.type]);
+	}
 	return 0;
 }
 
