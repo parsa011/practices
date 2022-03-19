@@ -448,7 +448,16 @@ void print_statement()
 
 void assigin_statement()
 {
-
+	char *name = Text;
+	match(T_IDENT, "Token Must Be Idenifier");
+	int index = find_var(name);
+	if (index == -1) {
+		panic("Variable <'%s'> Not Found", name);
+	}
+	match(T_EQUAL, "We Need '=' in assignment");
+	struct ASTnode *n = binary_expression(0);
+	variables[index]->value = calculate_binary_tree(n);
+	semi();
 }
 
 void variable_decleration_statement()
@@ -509,6 +518,11 @@ struct ASTnode *primary()
 				panic("Variable '%s' not found", Text);
 			n = mkastleaf(A_IDENT, index);
 			lex();
+			return n;
+		case T_OP :
+			lex();
+			n = binary_expression(0);
+			match(T_CP, "Unclosed Parenthesis");
 			return n;
 	}
 	return n;
@@ -591,14 +605,11 @@ void print_ast(struct ASTnode *n, int depth)
 
 int main(int argc, char **argv)
 {
+	lexer.lineno = 1;
 	init_variables_table();
 	set_program_mode(argc, argv);
 	lex();
 	statements();
-	//while (c_token.type != T_EOI) {
-	//	print_c_token();
-	//	lex();
-	//}
 	return 0;
 }
 
