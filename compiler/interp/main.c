@@ -69,6 +69,7 @@ enum TokenType {
 	T_CONST,
 	T_SEMI,
 	T_EQUAL,
+	T_COMMA,
 
 	T_BAD,
 	T_EOI
@@ -90,6 +91,7 @@ char *Tokens_str[] = {
 	"T_CONST",
 	"T_SEMI",
 	"T_EQUAL",
+	"T_COMMA",
 
 	"T_BAD",
 	"T_EOI"
@@ -343,6 +345,9 @@ bool lex()
 		case '=' :
 			set_c_token_type(T_EQUAL);
 			break;
+		case ',' :
+			set_c_token_type(T_COMMA);
+			break;
 		default : 
 			if (isdigit(c)) {
 				set_c_token_type(T_CONST);
@@ -463,13 +468,17 @@ void assigin_statement()
 void variable_decleration_statement()
 {
 	match(T_INT, "Int Keywork Expected");
-	char *name = Text;
+decl:
 	match(T_IDENT, "Not Valid Variable Name");
-	struct Variable *v = create_var(name,0);
+	struct Variable *v = create_var(Text, 0);
 	if (c_token.type == T_EQUAL) {
 		lex();
 		struct ASTnode *n = binary_expression(0);
 		v->value = calculate_binary_tree(n);
+	}
+	if (c_token.type == T_COMMA) {
+		lex();
+		goto decl;
 	}
 	semi();
 }
@@ -544,7 +553,7 @@ struct ASTnode *binary_expression(int ptp)
 	left = primary();
 
 	tokentype = c_token.type;
-	if (tokentype == T_SEMI || tokentype == T_CP) {
+	if (tokentype == T_SEMI || tokentype == T_CP || tokentype == T_COMMA) {
 		return left;
 	}
 
@@ -553,7 +562,7 @@ struct ASTnode *binary_expression(int ptp)
 		right = binary_expression(OpPrec[tokentype]);
 		left = mkastnode(arithop(tokentype), left, right, 0);
 		tokentype = c_token.type;
-		if (tokentype == T_SEMI || tokentype == T_CP) {
+		if (tokentype == T_SEMI || tokentype == T_CP || tokentype == T_COMMA) {
 			break;	
 		}
 	}
