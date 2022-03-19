@@ -68,6 +68,7 @@ enum TokenType {
 	T_IDENT,
 	T_CONST,
 	T_SEMI,
+	T_EQUAL,
 
 	T_BAD,
 	T_EOI
@@ -88,6 +89,7 @@ char *Tokens_str[] = {
 	"T_IDENT",
 	"T_CONST",
 	"T_SEMI",
+	"T_EQUAL",
 
 	"T_BAD",
 	"T_EOI"
@@ -141,8 +143,6 @@ char Text[32];
 int Text_len;
 
 //var
-struct Variable *create_var(char *, int);
-int find_var(char *);
 
 #define VARIABLE_MAX_LENGTH 32
 // now we just have int variables :)))))))))
@@ -158,17 +158,9 @@ int variables_count = 0;
 
 void init_variables_table();
 void increase_variables_table();
-
-void init_variables_table()
-{
-	variables = calloc(VARIABLE_MAX_LENGTH, sizeof(struct Variable));
-}
-
-void increase_variables_table()
-{
-	variables_buf_count += VARIABLE_MAX_LENGTH;
-	variables = realloc(variables, variables_buf_count * sizeof(struct Variable));
-}
+void check_variable_table();
+struct Variable *create_var(char *, int);
+int find_var(char *);
 
 /* our globla lexer */
 struct Lexer lexer;
@@ -206,6 +198,39 @@ void set_program_mode(int argc, char *argv[])
 	} else {
 		open_fp(argv[1]);
 	} 
+}
+
+// var
+
+void init_variables_table()
+{
+	variables = calloc(VARIABLE_MAX_LENGTH, sizeof(struct Variable));
+}
+
+void increase_variables_table()
+{
+	variables_buf_count += VARIABLE_MAX_LENGTH;
+	variables = realloc(variables, variables_buf_count * sizeof(struct Variable));
+}
+
+void check_variable_table()
+{
+	if (variables_count == variables_buf_count - 1)
+		increase_variables_table();
+}
+
+struct Variable *create_var(char *name, int value)
+{
+	check_variable_table();
+	struct Variable *v = malloc(sizeof(struct Variable));
+	int name_len = strlen(name);
+	if (name_len > VARIABLE_MAX_LENGTH) {
+		panic("Variable Name <'%s'> Should be Less than %d character", name, VARIABLE_MAX_LENGTH, name);
+	}
+	strcpy(v->name, name);
+	v->value;
+	variables[variables_count++] = v;
+	return v;
 }
 
 // lexer
@@ -315,6 +340,9 @@ bool lex()
 		case ';' :
 			set_c_token_type(T_SEMI);
 			break;
+		case '=' :
+			set_c_token_type(T_EQUAL);
+			break;
 		default : 
 			if (isdigit(c)) {
 				set_c_token_type(T_CONST);
@@ -358,10 +386,9 @@ struct ASTnode *mkastunary(int op, struct ASTnode *left, int value)
 // variables
 int find_var(char *name)
 {
-	int index;
 	for (int i = 0; i < variables_count; i++) {
 		if (strcmp(name, variables[i]->name) == 0)
-			return index;
+			return i;
 	}
 	return -1;
 }
@@ -426,7 +453,14 @@ void assigin_statement()
 
 void variable_decleration_statement()
 {
-
+	match(T_INT, "Int Keywork Expected");
+	char *name = Text;
+	match(T_IDENT, "Not Valid Variable Name");
+	create_var(name,0);
+	if (c_token.type == T_EQUAL) {
+		return;
+	}
+	semi();
 }
 
 int arithop(int type)
@@ -461,7 +495,7 @@ const int OpPrec[] = {
 struct ASTnode *primary()
 {
 	struct ASTnode *n;
-	int index;
+	int index = -1;
 	switch (c_token.type) {
 		case T_CONST :
 			n = mkastleaf(A_CONST, c_token.value);
