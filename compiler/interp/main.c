@@ -13,6 +13,7 @@
 // global
 void panic(char *, ...);
 #define CHR_T_INT(c) (c - '0')
+void print_c_token();
 
 // fp
 void open_fp(char *);
@@ -26,6 +27,7 @@ char next_char();
 void skip();
 char skip_next();
 void put_back(char);
+void save_token();
 void scan_ident(int);
 int scan_const(int);
 int guess_string_type(char *);
@@ -105,6 +107,7 @@ struct Lexer {
 	struct Token token;
 	int ch;
 	int putback;
+	struct Token *save_token;
 };
 
 struct ASTnode {
@@ -225,6 +228,11 @@ void put_back(char c)
 	lexer.putback = c;
 }
 
+void save_token()
+{
+	lexer.save_token = &c_token;
+}
+
 /* skip whitespaces and stop in first of non-space char */
 void skip()
 {
@@ -247,6 +255,7 @@ int scan_const(int c)
 	while (isdigit((c = next_char()))) {
 		res = res * 10 + CHR_T_INT(c);
 	}
+	put_back(c);
 	return res;
 }
 
@@ -272,6 +281,11 @@ int guess_string_type(char *s)
 
 bool lex()
 {
+	if (lexer.save_token != 0) {
+		c_token = *lexer.save_token;
+		lexer.save_token = 0;
+		return true;
+	}
 	int c = skip_next();
 	switch (c) {
 		case EOF :
@@ -399,8 +413,7 @@ void print_statement()
 	match(T_PRINT, "Print Expected");
 	eat_open_parenthesis();
 	struct ASTnode *n = binary_expression(0);
-	print_ast(n, 0);
-	//eat_close_parenthesis();
+	eat_close_parenthesis();
 	semi();
 	int result = calculate_binary_tree(n);
 	printf("%d\n", result);
@@ -465,7 +478,8 @@ struct ASTnode *primary()
 	return n;
 }
 
-int op_precedence(int tokentype) {
+int op_precedence(int tokentype) 
+{
 	int prec = OpPrec[tokentype];
 	if (prec == 0)
 		panic("Syntax error, token %d", tokentype);
@@ -478,17 +492,20 @@ struct ASTnode *binary_expression(int ptp)
 	int tokentype;
 
 	left = primary();
+
 	tokentype = c_token.type;
-	if (tokentype == T_SEMI || tokentype == T_CP)
+	if (tokentype == T_SEMI || tokentype == T_CP) {
 		return left;
+	}
 
 	while (op_precedence(tokentype) > ptp) {
 		lex();
 		right = binary_expression(OpPrec[tokentype]);
 		left = mkastnode(arithop(tokentype), left, right, 0);
 		tokentype = c_token.type;
-		if (tokentype == T_SEMI || tokentype == T_CP)
+		if (tokentype == T_SEMI || tokentype == T_CP) {
 			break;	
+		}
 	}
 	return left;
 }
@@ -519,12 +536,13 @@ int calculate_binary_tree(struct ASTnode *n)
 void print_ast(struct ASTnode *n, int depth)
 {
 	for (int i = 1; i <= depth; i++) {
-		if (depth % i == 0 && i != depth && i != 2)
-			putchar('|');
-		else
-			putchar(' ');
+		putchar(' ');
 	}
-	printf("%s\n", ArithOp_str[n->op]);
+	printf("%s", ArithOp_str[n->op]);
+	if (n->op == A_CONST) {
+		printf(" : %d", n->value);
+	}
+	putchar('\n');
 	if (n->left) {
 		print_ast(n->left, depth + 4);
 	}
@@ -541,6 +559,10 @@ int main(int argc, char **argv)
 	set_program_mode(argc, argv);
 	lex();
 	statements();
+	//while (c_token.type != T_EOI) {
+	//	print_c_token();
+	//	lex();
+	//}
 	return 0;
 }
 
@@ -553,4 +575,15 @@ void panic(char *msg, ...)
 	va_end(ap);
 	fprintf(stderr, "%s\n", buf);
 	exit(1);
+}
+
+void print_c_token()
+{
+	printf("%s", Tokens_str[c_token.type]);
+	if (c_token.type == T_CONST) {
+		printf(" : %d", c_token.value);
+	} else if (c_token.type == T_IDENT) {
+		printf(" : %s", Text);
+	}
+	putchar('\n');
 }
