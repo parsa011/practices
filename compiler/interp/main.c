@@ -456,9 +456,11 @@ void variable_decleration_statement()
 	match(T_INT, "Int Keywork Expected");
 	char *name = Text;
 	match(T_IDENT, "Not Valid Variable Name");
-	create_var(name,0);
+	struct Variable *v = create_var(name,0);
 	if (c_token.type == T_EQUAL) {
-		return;
+		lex();
+		struct ASTnode *n = binary_expression(0);
+		v->value = calculate_binary_tree(n);
 	}
 	semi();
 }
