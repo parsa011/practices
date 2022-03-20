@@ -1,4 +1,4 @@
-"SDF";
+string name = "SDF";
 int a = 20 * 2 , b = 10;
 a = 10;
 a = (123 - 23) * (10 / 5);

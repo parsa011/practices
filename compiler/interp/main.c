@@ -30,8 +30,12 @@ void put_back(char);
 void save_token();
 void scan_ident(int);
 int scan_const(int);
+void scan_string();
 int guess_string_type(char *);
 bool lex();
+void match(int, char *);
+bool is_type_keyword(int);
+bool is_type_keyword_string(char *);
 
 // tree
 struct ASTnode *mkastnode(int, struct ASTnode *, struct ASTnode *, int);
@@ -39,7 +43,6 @@ struct ASTnode *mkastleaf(int, int);
 struct ASTnode *mkastunary(int, struct ASTnode *, int);
 
 //parser
-void match(int, char *);
 void semi();
 void statements();
 void print_statement();
@@ -68,6 +71,7 @@ enum TokenType {
 	T_STRING,
 	T_IDENT,
 	T_CONST,
+	T_CHAR_ARRAY,
 	T_SEMI,
 	T_EQUAL,
 	T_COMMA,
@@ -92,6 +96,7 @@ char *Tokens_str[] = {
 	"T_STRING",
 	"T_IDENT",
 	"T_CONST",
+	"T_CHAR_ARRAY",
 	"T_SEMI",
 	"T_EQUAL",
 	"T_COMMA",
@@ -99,6 +104,20 @@ char *Tokens_str[] = {
 
 	"T_BAD",
 	"T_EOI"
+};
+
+char *Types_string_arr[] = {
+	"string",
+	"int",
+	"char",
+	"float",
+	"bool",
+	"double"
+};
+
+int Types_arr[] = {
+	T_INT,
+	T_STRING
 };
 
 struct Token {
@@ -153,7 +172,7 @@ int Text_len;
 #define VARIABLE_MAX_LENGTH 32
 // now we just have int variables :)))))))))
 struct Variable {
-	int value;
+	void *value;
 	char name[VARIABLE_MAX_LENGTH];
 };
 
@@ -311,6 +330,7 @@ void scan_string()
 		if (c == '"' || c == EOF)
 			break;
 	}
+	Text[Text_len] = 0;
 	if (c != '"')
 		panic("Unclosed String");
 }
@@ -321,6 +341,8 @@ int guess_string_type(char *s)
 		return T_INT;
 	else if (strcmp("print", s) == 0)
 		return T_PRINT;
+	else if (strcmp("string", s) == 0)
+		return T_STRING;
 	return T_IDENT;
 }
 
@@ -364,7 +386,7 @@ bool lex()
 			set_c_token_type(T_EQUAL);
 			break;
 		case '"' :
-			set_c_token_type(T_STRING);
+			set_c_token_type(T_CHAR_ARRAY);
 			scan_string();
 			break;
 		case ',' :
@@ -382,6 +404,28 @@ bool lex()
 			}
 			printf("Bad Token <'%c'> \n", c);
 	}
+}
+
+bool is_type_keyword(int n)
+{
+	int *p = Types_arr;
+	while (*p) {
+		if (n == *p)
+			return true;
+		p++;
+	}
+	return false;
+}
+
+bool is_type_keyword_string(char *s)
+{
+	char *p = Types_string_arr[0];
+	while (*p) {
+		if (strcmp(p, s) == 0)
+			return true;
+		p++;
+	}
+	return false;
 }
 
 // AST
@@ -485,20 +529,34 @@ void assigin_statement()
 	}
 	match(T_EQUAL, "We Need '=' in assignment");
 	struct ASTnode *n = binary_expression(0);
-	variables[index]->value = calculate_binary_tree(n);
+	int res = calculate_binary_tree(n);
+	variables[index]->value = &res;
 	semi();
 }
 
 void variable_decleration_statement()
 {
-	match(T_INT, "Int Keywork Expected");
+	if (!is_type_keyword(c_token.type)) {
+		panic("Invalied Type : <'%s'>", Text);
+	}
+	int token_type = c_token.type;
 decl:
 	match(T_IDENT, "Not Valid Variable Name");
 	struct Variable *v = create_var(Text, 0);
+	
 	if (c_token.type == T_EQUAL) {
 		lex();
-		struct ASTnode *n = binary_expression(0);
-		v->value = calculate_binary_tree(n);
+		switch (token_type) {
+			case T_INT :
+				{
+					struct ASTnode *n = binary_expression(0);
+					int res = calculate_binary_tree(n);
+					v->value = &res;
+				}
+				break;
+			case T_STRING :
+				v->value = Text;
+		}
 	}
 	if (c_token.type == T_COMMA) {
 		lex();
@@ -612,7 +670,11 @@ int calculate_binary_tree(struct ASTnode *n)
 		case A_CONST :
 			return n->value;
 		case A_IDENT :
-			return variables[n->value]->value;
+			{
+				int *val = ((int *)variables[n->value]->value);
+				return *val;
+
+			}
 	}
 }
 
@@ -666,7 +728,7 @@ void print_c_token()
 	printf("%s", Tokens_str[c_token.type]);
 	if (c_token.type == T_CONST) {
 		printf(" : %d", c_token.value);
-	} else if (c_token.type == T_IDENT || c_token.type == T_STRING) {
+	} else if (c_token.type == T_IDENT || c_token.type == T_CHAR_ARRAY) {
 		printf(" : %s", Text);
 	}
 	putchar('\n');
