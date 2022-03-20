@@ -65,11 +65,13 @@ enum TokenType {
 
 	T_INT,
 	T_PRINT,
+	T_STRING,
 	T_IDENT,
 	T_CONST,
 	T_SEMI,
 	T_EQUAL,
 	T_COMMA,
+	T_DOUBLEQ,
 
 	T_BAD,
 	T_EOI
@@ -87,11 +89,13 @@ char *Tokens_str[] = {
 
 	"T_INT",
 	"T_PRINT",
+	"T_STRING",
 	"T_IDENT",
 	"T_CONST",
 	"T_SEMI",
 	"T_EQUAL",
 	"T_COMMA",
+	"T_DOUBLEQ",
 
 	"T_BAD",
 	"T_EOI"
@@ -297,6 +301,20 @@ void scan_ident(int c)
 	put_back(c);
 }
 
+void scan_string()
+{
+	Text_len = 0;
+	int c = read_char();
+	while (1) {
+		Text[Text_len++] = c;
+		c = read_char();
+		if (c == '"' || c == EOF)
+			break;
+	}
+	if (c != '"')
+		panic("Unclosed String");
+}
+
 int guess_string_type(char *s)
 {
 	if (strcmp("int", s) == 0)
@@ -344,6 +362,10 @@ bool lex()
 			break;
 		case '=' :
 			set_c_token_type(T_EQUAL);
+			break;
+		case '"' :
+			set_c_token_type(T_STRING);
+			scan_string();
 			break;
 		case ',' :
 			set_c_token_type(T_COMMA);
@@ -447,6 +469,8 @@ void print_statement()
 	struct ASTnode *n = binary_expression(0);
 	eat_close_parenthesis();
 	semi();
+	if (!n)
+		return;
 	int result = calculate_binary_tree(n);
 	printf("%d\n", result);
 }
@@ -514,7 +538,7 @@ const int OpPrec[] = {
 
 struct ASTnode *primary()
 {
-	struct ASTnode *n;
+	struct ASTnode *n = NULL;
 	int index = -1;
 	switch (c_token.type) {
 		case T_CONST :
@@ -618,7 +642,11 @@ int main(int argc, char **argv)
 	init_variables_table();
 	set_program_mode(argc, argv);
 	lex();
-	statements();
+	while (c_token.type != T_EOI) {
+		print_c_token();
+		lex();
+	}
+	//statements();
 	return 0;
 }
 
@@ -638,7 +666,7 @@ void print_c_token()
 	printf("%s", Tokens_str[c_token.type]);
 	if (c_token.type == T_CONST) {
 		printf(" : %d", c_token.value);
-	} else if (c_token.type == T_IDENT) {
+	} else if (c_token.type == T_IDENT || c_token.type == T_STRING) {
 		printf(" : %s", Text);
 	}
 	putchar('\n');
