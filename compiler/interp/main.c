@@ -14,6 +14,7 @@
 void panic(char *, ...);
 #define CHR_T_INT(c) (c - '0')
 void print_c_token();
+void print_token_string(int);
 
 // fp
 void open_fp(char *);
@@ -36,6 +37,7 @@ bool lex();
 void match(int, char *);
 bool is_type_keyword(int);
 bool is_type_keyword_string(char *);
+int type_to_value_type(int);
 
 // tree
 struct ASTnode *mkastnode(int, struct ASTnode *, struct ASTnode *, int);
@@ -48,9 +50,7 @@ void statements();
 void print_statement();
 void variable_decleration_statement();
 void assigin_statement();
-
 void print_ast(struct ASTnode *, int);
-
 struct ASTnode *binary_expression(int);
 int calculate_binary_tree(struct ASTnode *);
 
@@ -75,7 +75,6 @@ enum TokenType {
 	T_SEMI,
 	T_EQUAL,
 	T_COMMA,
-	T_DOUBLEQ,
 
 	T_BAD,
 	T_EOI
@@ -100,7 +99,6 @@ char *Tokens_str[] = {
 	"T_SEMI",
 	"T_EQUAL",
 	"T_COMMA",
-	"T_DOUBLEQ",
 
 	"T_BAD",
 	"T_EOI"
@@ -174,6 +172,8 @@ int Text_len;
 struct Variable {
 	void *value;
 	char name[VARIABLE_MAX_LENGTH];
+	int type;
+	int index;
 };
 
 #define VARIABLES_BUF_SIZE 10
@@ -184,8 +184,8 @@ int variables_count = 0;
 void init_variables_table();
 void increase_variables_table();
 void check_variable_table();
-struct Variable *create_var(char *, int);
-int find_var(char *);
+struct Variable *create_var(char *, void *, int);
+struct Variable *find_var(char *);
 
 /* our globla lexer */
 struct Lexer lexer;
@@ -244,7 +244,7 @@ void check_variable_table()
 		increase_variables_table();
 }
 
-struct Variable *create_var(char *name, int value)
+struct Variable *create_var(char *name, void *value, int type)
 {
 	check_variable_table();
 	struct Variable *v = malloc(sizeof(struct Variable));
@@ -253,12 +253,37 @@ struct Variable *create_var(char *name, int value)
 		panic("Variable Name <'%s'> Should be Less than %d character", name, VARIABLE_MAX_LENGTH, name);
 	}
 	strcpy(v->name, name);
-	v->value;
+	v->value = value;
+	v->type = type;
+	v->index = variables_count;
 	variables[variables_count++] = v;
 	return v;
 }
 
 // lexer
+
+int type_to_value_type(int token)
+{
+	switch (token) {
+		case T_INT :
+			return T_CONST;
+		case T_STRING :
+			return T_CHAR_ARRAY;
+	}
+}
+
+bool is_unary(struct Token token)
+{
+	if (token.type == T_CONST)
+		return true;
+	if (token.type == T_IDENT) {
+		struct Variable *v = find_var(Text);
+		if (v->type == T_CONST)
+			return true;
+	}
+	return false;
+}
+
 char next_char()
 {
 	int c;
@@ -365,6 +390,15 @@ bool lex()
 			set_c_token_type(T_DASH);
 			break;
 		case '/' :
+			c = next_char();
+			if (c == '/') {
+				do {
+					c = next_char();
+				} while (c != '\n');
+				lex();
+				break;
+			}
+			put_back(c);
 			set_c_token_type(T_SLASH);
 			break;
 		case '*' :
@@ -455,13 +489,13 @@ struct ASTnode *mkastunary(int op, struct ASTnode *left, int value)
 }
 
 // variables
-int find_var(char *name)
+struct Variable *find_var(char *name)
 {
 	for (int i = 0; i < variables_count; i++) {
 		if (strcmp(name, variables[i]->name) == 0)
-			return i;
+			return variables[i];
 	}
-	return -1;
+	return NULL;
 }
 
 // parser
@@ -482,6 +516,7 @@ void statements()
 	while (c_token.type != T_EOI) {
 		switch (c_token.type) {
 			case T_INT :
+			case T_STRING :
 				variable_decleration_statement();
 				break;
 			case T_IDENT :
@@ -510,27 +545,32 @@ void print_statement()
 {
 	match(T_PRINT, "Print Expected");
 	eat_open_parenthesis();
-	struct ASTnode *n = binary_expression(0);
+	if (is_unary(lexer.token)) {
+		struct ASTnode *n = binary_expression(0);
+		if (!n)
+			return;
+		//print_ast(n, 0);
+		int result = calculate_binary_tree(n);
+		printf("%d\n", result);
+	} else {
+		lex();
+	}
 	eat_close_parenthesis();
 	semi();
-	if (!n)
-		return;
-	int result = calculate_binary_tree(n);
-	printf("%d\n", result);
 }
 
 void assigin_statement()
 {
 	char *name = Text;
 	match(T_IDENT, "Token Must Be Idenifier");
-	int index = find_var(name);
-	if (index == -1) {
+	struct Variable *v = find_var(name);
+	if (v == NULL) {
 		panic("Variable <'%s'> Not Found", name);
 	}
 	match(T_EQUAL, "We Need '=' in assignment");
 	struct ASTnode *n = binary_expression(0);
 	int res = calculate_binary_tree(n);
-	variables[index]->value = &res;
+	v->value = &res;
 	semi();
 }
 
@@ -539,23 +579,26 @@ void variable_decleration_statement()
 	if (!is_type_keyword(c_token.type)) {
 		panic("Invalied Type : <'%s'>", Text);
 	}
+	lex();
 	int token_type = c_token.type;
 decl:
 	match(T_IDENT, "Not Valid Variable Name");
-	struct Variable *v = create_var(Text, 0);
-	
+	struct Variable *v = create_var(Text, 0, 0);
 	if (c_token.type == T_EQUAL) {
 		lex();
-		switch (token_type) {
-			case T_INT :
+		v->type = type_to_value_type(c_token.type);
+		switch (c_token.type) {
+			case T_CONST :
 				{
 					struct ASTnode *n = binary_expression(0);
 					int res = calculate_binary_tree(n);
 					v->value = &res;
+					break;
 				}
-				break;
-			case T_STRING :
+			case T_CHAR_ARRAY :
 				v->value = Text;
+				lex();
+				break;
 		}
 	}
 	if (c_token.type == T_COMMA) {
@@ -597,17 +640,17 @@ const int OpPrec[] = {
 struct ASTnode *primary()
 {
 	struct ASTnode *n = NULL;
-	int index = -1;
+	struct Variable *v;
 	switch (c_token.type) {
 		case T_CONST :
 			n = mkastleaf(A_CONST, c_token.value);
 			lex();
 			return n;
 		case T_IDENT :
-			index = find_var(Text);
-			if (index == -1)
+			v = find_var(Text);
+			if (v == NULL)
 				panic("Variable '%s' not found", Text);
-			n = mkastleaf(A_IDENT, index);
+			n = mkastleaf(A_IDENT, v->index);
 			lex();
 			return n;
 		case T_OP :
@@ -671,9 +714,10 @@ int calculate_binary_tree(struct ASTnode *n)
 			return n->value;
 		case A_IDENT :
 			{
-				int *val = ((int *)variables[n->value]->value);
-				return *val;
-
+				struct Variable *v = variables[n->value];
+				if (v->type != T_CONST)
+					panic("Invalid Var in unary Tree : %s", v->name);
+				return *((int *)v->value);
 			}
 	}
 }
@@ -686,6 +730,15 @@ void print_ast(struct ASTnode *n, int depth)
 	printf("%s", ArithOp_str[n->op]);
 	if (n->op == A_CONST) {
 		printf(" : %d", n->value);
+	} else if (n->op == A_IDENT) {
+		struct Variable *v = variables[n->value];
+		if (v->type == T_CHAR_ARRAY) {
+			char *p = (char *)v->value;
+			printf(" : %s", p);
+		} else if (v->type == T_CONST) {
+			int *num = (int *)v->value;
+			printf(" : %d", *num);
+		}
 	}
 	putchar('\n');
 	if (n->left) {
@@ -704,11 +757,11 @@ int main(int argc, char **argv)
 	init_variables_table();
 	set_program_mode(argc, argv);
 	lex();
-	while (c_token.type != T_EOI) {
-		print_c_token();
-		lex();
-	}
-	//statements();
+	//while (c_token.type != T_EOI) {
+	//	print_c_token();
+	//	lex();
+	//}
+	statements();
 	return 0;
 }
 
@@ -732,4 +785,9 @@ void print_c_token()
 		printf(" : %s", Text);
 	}
 	putchar('\n');
+}
+
+void print_token_string(int n)
+{
+	printf("%s\n", Tokens_str[n]);
 }
