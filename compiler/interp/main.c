@@ -583,20 +583,18 @@ void variable_decleration_statement()
 	int token_type = c_token.type;
 decl:
 	match(T_IDENT, "Not Valid Variable Name");
-	struct Variable *v = create_var(Text, 0, 0);
 	if (c_token.type == T_EQUAL) {
 		lex();
-		v->type = type_to_value_type(c_token.type);
 		switch (c_token.type) {
 			case T_CONST :
 				{
 					struct ASTnode *n = binary_expression(0);
 					int res = calculate_binary_tree(n);
-					v->value = &res;
+					create_var(Text, &res, type_to_value_type(c_token.type));
 					break;
 				}
 			case T_CHAR_ARRAY :
-				v->value = Text;
+				create_var(Text, Text, type_to_value_type(c_token.type));
 				lex();
 				break;
 		}
@@ -733,11 +731,9 @@ void print_ast(struct ASTnode *n, int depth)
 	} else if (n->op == A_IDENT) {
 		struct Variable *v = variables[n->value];
 		if (v->type == T_CHAR_ARRAY) {
-			char *p = (char *)v->value;
-			printf(" : %s", p);
+			printf(" : %s", ((char *)v->value));
 		} else if (v->type == T_CONST) {
-			int *num = (int *)v->value;
-			printf(" : %d", *num);
+			printf(" : %d", *((int *)v->value));
 		}
 	}
 	putchar('\n');

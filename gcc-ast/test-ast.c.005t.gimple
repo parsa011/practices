@@ -1,0 +1,15 @@
+main (int argc, char * * argv)
+{
+  int D.2318;
+
+  {
+    printf ("%d\n", argc);
+    printf ("Hello ,World\n");
+    D.2318 = 0;
+    return D.2318;
+  }
+  D.2318 = 0;
+  return D.2318;
+}
+
+

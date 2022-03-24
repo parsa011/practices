@@ -1,0 +1,38 @@
+
+;; Function main (main, funcdef_no=0, decl_uid=2315, cgraph_uid=1, symbol_order=0)
+
+
+Analyzing function body size: main
+
+IPA function summary for main/0
+  global time:     25.000000
+  self size:       8
+  global size:     0
+  min size:       0
+  self stack:      0
+  global stack:    0
+    size:1.000000, time:2.000000
+    size:2.000000, time:0.000000,  executed if:(not inlined)
+  calls:
+    __builtin_puts/2 function body not available
+      loop depth: 0 freq:1.00 size: 2 time: 11
+    printf/1 function body not available
+      loop depth: 0 freq:1.00 size: 3 time: 12
+
+main (int argc, char * * argv)
+{
+  int D.2318;
+  int _5;
+
+  <bb 2> :
+  printf ("%d\n", argc_2(D));
+  __builtin_puts (&"Hello ,World"[0]);
+  _5 = 0;
+
+  <bb 3> :
+<L0>:
+  return _5;
+
+}
+
+
