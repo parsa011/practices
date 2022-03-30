@@ -278,6 +278,7 @@ bool is_unary(struct Token token)
 		return true;
 	if (token.type == T_IDENT) {
 		struct Variable *v = find_var(Text);
+		print_token_string(v->type);
 		if (v->type == T_CONST)
 			return true;
 	}
@@ -545,11 +546,12 @@ void print_statement()
 {
 	match(T_PRINT, "Print Expected");
 	eat_open_parenthesis();
+	printf("%s\n", Tokens_str[c_token.type]);
 	if (is_unary(lexer.token)) {
 		struct ASTnode *n = binary_expression(0);
 		if (!n)
 			return;
-		//print_ast(n, 0);
+		print_ast(n, 0);
 		int result = calculate_binary_tree(n);
 		printf("%d\n", result);
 	} else {
