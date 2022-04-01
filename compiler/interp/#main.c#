@@ -267,7 +267,7 @@ int type_to_value_type(int token)
 	switch (token) {
 		case T_INT :
 			return T_CONST;
-		case T_STRING :
+p		case T_STRING :
 			return T_CHAR_ARRAY;
 	}
   return -1;
