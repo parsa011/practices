@@ -29,14 +29,7 @@ void writeChunk(Chunk *chunk, uint8_t byte, int line)
 		chunk->code = GROW_ARRAY(uint8_t, chunk->code, oldCapacity, chunk->capacity);
 		chunk->lines = GROW_ARRAY(int, chunk->lines, oldCapacity, chunk->capacity);
 	}
-	int *line_pointer = chunk->lines + sizeof(chunk->lines) / sizeof(chunk->lines[0]);
-	if (line == *line_pointer) {
-		int *index = chunk->lines - 1;
-		index++;
-	} else {
-		chunk->lines[chunk->count] = 1;
-		chunk->lines[chunk->count] = line;
-	}
+	chunk->lines[chunk->count] = line;
 	chunk->code[chunk->count++] = byte;
 }
 
