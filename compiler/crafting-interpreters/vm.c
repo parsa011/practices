@@ -55,11 +55,14 @@ static void runtimeError(const char* format, ...)
 void initVM()
 {
 	resetStack();
+	vm.objects = NULL;
+	initTable(&vm.strings);
 }
 
 void freeVM()
 {
-
+	freeObjects();
+	freeTable(&vm.strings);
 }
 
 static InterpretResult run()
@@ -152,9 +155,11 @@ static InterpretResult run()
 				}
 				push(NUMBER_VAL(-AS_NUMBER(pop())));
 				break;
+			case OP_PRINT :
+				printValue(pop());
+				putchar('\n');
+				break;
 			case OP_RETURN:
-			  	printValue(pop());
-				printf("\n");
 				return INTERPRET_OK;
 		}
 	}
