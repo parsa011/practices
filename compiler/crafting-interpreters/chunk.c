@@ -1,24 +1,45 @@
+#include <stdlib.h>
+
 #include "chunk.h"
 #include "memory.h"
-
-#include <stdlib.h>
-#include <stdio.h>
 
 void initChunk(Chunk *chunk)
 {
 	chunk->count = 0;
 	chunk->capacity = 0;
 	chunk->code = NULL;
-	chunk->lines = NULL;
 	initValueArray(&chunk->constants);
+	initValueArray(&chunk->lines);
 }
 
 void freeChunk(Chunk *chunk)
 {
 	FREE_ARRAY(uint8_t, chunk->code, chunk->capacity);
-	FREE_ARRAY(int, chunk->lines, chunk->capacity);
+	FREE_ARRAY(Value, chunk->lines.values, chunk->capacity);
 	freeValueArray(&chunk->constants);
 	initChunk(chunk);
+}
+
+static void addLine(Chunk *chunk, int line)
+{
+	writeValueArray(&chunk->lines, line);
+	writeValueArray(&chunk->lines, 1);
+}
+
+/*
+ * ['line, count' , 'line, count']
+ */
+static void insertLine(Chunk *chunk, int line)
+{
+	if (chunk->lines.count == 0) {
+		addLine(chunk, line);
+	} else {
+		if (line == chunk->lines.values[chunk->lines.count - 2]) {
+			chunk->lines.values[chunk->lines.count - 1]++;
+		} else {
+			addLine(chunk, line);
+		}
+	}
 }
 
 void writeChunk(Chunk *chunk, uint8_t byte, int line)
@@ -27,23 +48,31 @@ void writeChunk(Chunk *chunk, uint8_t byte, int line)
 		int oldCapacity = chunk->capacity;
 		chunk->capacity = GROW_CAPACITY(oldCapacity);
 		chunk->code = GROW_ARRAY(uint8_t, chunk->code, oldCapacity, chunk->capacity);
-		chunk->lines = GROW_ARRAY(int, chunk->lines, oldCapacity, chunk->capacity);
 	}
-	chunk->lines[chunk->count] = line;
-	chunk->code[chunk->count++] = byte;
+	if (chunk->lines.capacity < chunk->lines.count + 1) {
+		int oldCapacity = chunk->lines.capacity;
+		chunk->lines.capacity = GROW_CAPACITY(oldCapacity);
+		chunk->lines.values = GROW_ARRAY(Value, chunk->lines.values,
+										 oldCapacity, chunk->lines.capacity);
+	}
+	chunk->code[chunk->count] = byte;
+	insertLine(chunk, line);
+	chunk->count++;
 }
 
-int getLine(Chunk *chunk, int index)
+int getLine(Chunk *chunk, int op_index)
 {
-	int line = -1;
-	for (int j = 0, i = 0; j <= index; i += 2) {
-		line = chunk->lines[i + 1];
-		j += chunk->lines[i]; 
+	int n = 0;
+	for (int i = 0; i < chunk->lines.count;) {
+		n += chunk->lines.values[i + 1];
+		if (n > op_index)
+			return chunk->lines.values[i];
+		i += 2;
 	}
-	return line;
+	return -1;
 }
 
-int addConstant(Chunk* chunk, Value value) 
+int addConstant(Chunk *chunk, Value value)
 {
 	writeValueArray(&chunk->constants, value);
 	return chunk->constants.count - 1;

@@ -42,7 +42,7 @@ int matchhere(char *regex, char *text)
 
 int main(int argc, char *argv[])
 {
-	if (match("a.*c", "abbbbbc"))
+	if (match("ab*a*c*a", "aaa"))
 		printf("Works \n");
 	return 0;
 }
