@@ -22,7 +22,7 @@ static void runtimeError(const char *format, ...)
 	fputs("\n", stderr);
 	
 	size_t instruction = vm.ip - vm.chunk->code - 1;
-	int line = vm.chunk->lines[instruction];
+	int line = vm.chunk->lines.values[instruction];
 	fprintf(stderr, "[line %d] in script\n", line);
 	
 	resetStack();
@@ -49,7 +49,7 @@ Value pop()
 	return *(--vm.stackTop);
 }
 
-Value *peek(int distance)
+static Value peek(int distance)
 {
 	return vm.stackTop[-1 - distance];
 }
@@ -66,7 +66,7 @@ static InterpretResult run()
 		}													\
 		Value b = pop();									\
 		Value a = pop();									\
-		push(valueType(a op b));							\
+		push(valueType(AS_NUMBER(a) op AS_NUMBER(b)));		\
 	} while (false);
 	
 	for (;;) {
@@ -94,14 +94,14 @@ static InterpretResult run()
 			BINARY_OP(NUMBER_VAL, -);
 			break;
 		case OP_MULTIPLY :
-			BINARY_OP(NUMEBR_VAL, *);
+			BINARY_OP(NUMBER_VAL, *);
 			break;
 		case OP_DIVIDE :
 			BINARY_OP(NUMBER_VAL, /);
 			break;
 		case OP_NEGATE :
 			if (!IS_NUMBER(peek(0))) {
-				runtimeError("Operand mustd be a number");
+				runtimeError("Operand must be a number.");
 				return INTERPRET_RUNTIME_ERROR;
 			}
 			push(NUMBER_VAL(-AS_NUMBER(pop())));

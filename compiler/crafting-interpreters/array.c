@@ -1,5 +1,6 @@
 #include "array.h"
 #include "memory.h"
+#include "value.h"
 
 void initIntArray(IntArray *array)
 {
@@ -13,7 +14,7 @@ void writeIntArray(IntArray *array, int value)
 	if (array->capacity < array->count + 1) {
 		int oldCapacity = array->capacity;
 		array->capacity = GROW_CAPACITY(oldCapacity);
-		array->values = GROW_ARRAY(Value, array->values,
+		array->values = GROW_ARRAY(int, array->values,
 								   oldCapacity, array->capacity);
 	}
 	array->values[array->count] = value;
