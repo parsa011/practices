@@ -54,6 +54,14 @@ static Value peek(int distance)
 	return vm.stackTop[-1 - distance];
 }
 
+static bool isFalsy(Value value)
+{
+	// numbers bigger than 0 are true, like c :) to much for a scripting language, right ?
+	return (IS_NIL(value) || (IS_BOOL(value) && !AS_BOOL(value)))
+		   ||
+		(IS_NUMBER(value) && AS_NUMBER(value) < 0);
+}
+
 static InterpretResult run()
 {
 #define READ_BYTE() (*vm.ip++)
@@ -87,6 +95,27 @@ static InterpretResult run()
 			push(constant);
 			break;
 		}
+		case OP_NIL :
+			push(NIL_VAL);
+			break;
+		case OP_TRUE :
+			push(BOOL_VAL(true));
+			break;
+		case OP_FALSE :
+			push(BOOL_VAL(false));
+			break;
+		case OP_EQUAL : {
+			Value a = pop();
+			Value b = pop();
+			push(BOOL_VAL(valuesEqual(a, b)));
+			break;
+		}
+		case OP_GREATER :
+			BINARY_OP(BOOL_VAL, >);
+			break;
+		case OP_LESS :
+			BINARY_OP(BOOL_VAL, <);
+			break;
 		case OP_ADD :
 			BINARY_OP(NUMBER_VAL, +);
 			break;
@@ -98,6 +127,9 @@ static InterpretResult run()
 			break;
 		case OP_DIVIDE :
 			BINARY_OP(NUMBER_VAL, /);
+			break;
+		case OP_NOT :
+			push(BOOL_VAL(isFalsy(pop())));
 			break;
 		case OP_NEGATE :
 			if (!IS_NUMBER(peek(0))) {
