@@ -22,7 +22,6 @@ int min_sum(int passed[], int length)
 	}
 	int res = 0;
 	for (int i = 0, j = length - 1; i < j; i++, j--) {
-		printf("%d * %d\n", passed[i], passed[j]);
 		res += passed[i] * passed[j];
 	}
 	return res; 
