@@ -8,14 +8,16 @@ void qsort(int arr[], int len)
 {
   if (len < 2)
     return;
-  int pivot = arr[0];
+  int pivot = arr[len / 2];
   int less[len];
   int less_len = 0;
   int greater[len];
   int greater_len = 0;
 
   int current;
-  for (int i = 1; i < len; i++) {
+  for (int i = 0; i < len; i++) {
+    if (i == len / 2)
+      continue;
     current = arr[i];
     if (pivot >= current) {
       less[less_len++] = current;
