@@ -1,0 +1,60 @@
+* { 
+	padding : 0;
+	margin : 0;
+}
+
+/*
+ * main axis
+ * cross axis
+ */
+.container {
+	border : 6px solid black;
+	height : 300px;
+	display : flex;
+	flex-flow : row wrap;
+	align-items : baseline; 
+}
+
+.flex-item {
+	color : white;
+	font-size : 15px;
+	padding : 2%;
+	text-align : center;
+}
+
+.item-1 {
+	background-color : red;
+}
+
+.item-2 {
+	background-color : purple;
+}
+
+.item-3 {
+	background-color : yellow;
+	order : 2;
+}
+
+.item-4 {
+	background-color : brown;
+}
+
+.item-5 {
+	background-color : gray;
+}
+
+.item-6 {
+	background-color : coral;
+}
+
+.item-7 {
+	background-color : aquamarine;
+}
+
+.item-8 {
+	background-color : blanchedalmond;
+}
+
+.item-9 {
+	background-color : darkslategrey;
+}

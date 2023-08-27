@@ -1,0 +1,15 @@
+* {
+	* padding : 0;
+	* margin : 0;
+}
+
+.container {
+	color : red;
+	display : flex;
+	height : 300px;
+}
+
+.container > div {
+	border : 1px solid #ccc;
+	margin-left : 2%;
+}

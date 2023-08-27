@@ -1,0 +1,38 @@
+* {
+	* padding : 0;
+	* margin : 0;
+}
+
+.container { 
+	display : grid;
+	grid-template-areas : 
+	"h h h h h h"
+	"s s c c c c"
+	"f f f f f f";
+	grid-template-rows : 100px 500px;
+	gap : 5px;
+}
+
+.item {
+	padding : 20px;
+}
+
+.content1 {
+	background-color : red;
+	grid-area : h;
+}
+
+.content2 {
+	background-color : yellow;
+	grid-area : s: 
+}
+
+.content3 {
+	background-color : purple;
+	grid-area : c;
+}
+
+.content4 {
+	background-color : gray;
+	grid-area : f;
+}
