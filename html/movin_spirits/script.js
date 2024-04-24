@@ -13,10 +13,33 @@ const clearCtx = () => {
     ctx.fillStyle = "#000";
 }
 
+const getColor = (distance) => {
+    if (distance > 0 && distance < 200) {
+        return "#0000ff";
+    } else if (distance > 200 && distance < 400) {
+        return "#00ff00";
+    }
+    return "#ff0000";
+}
+
 const drawLine = () => {
     ctx.beginPath();
+    var distance = Math.round(
+        Math.sqrt(
+            Math.pow(Math.abs(dynamicRec.x - staticRec.x), 2)
+            +
+            Math.pow(Math.abs(dynamicRec.y - staticRec.y), 2)
+        )
+    );
+    var color = getColor(distance);
+    ctx.strokeStyle = color;
     ctx.moveTo(dynamicRec.x + dynamicRec.width, dynamicRec.y + dynamicRec.height);
     ctx.lineTo(staticRec.x, staticRec.y);
+    ctx.fillText(
+        distance,
+        (dynamicRec.x + staticRec.x) / 2,
+        (dynamicRec.y + staticRec.y) / 2
+    );
     ctx.stroke();
 }
 
@@ -49,7 +72,6 @@ canvas.addEventListener('mousedown', (event) => {
     let y = event.y;
     if ((dynamicRec.x <= x && x <= dynamicRec.downX()) && (dynamicRec.y <= y && y <= dynamicRec.downY())) {
         gotIt = true;
-        console.log("yeap");
     } else {
         gotIt = false;
     }
