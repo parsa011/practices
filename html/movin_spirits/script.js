@@ -20,20 +20,48 @@ const drawLine = () => {
     ctx.stroke();
 }
 
-drawLine();
 
-document.addEventListener('keydown', (event) => {
-    if (event.key === "ArrowDown") {
-        dynamicRec.goDown();
-    } else if (event.key === "ArrowUp") {
-        dynamicRec.goUp();
-    } else if (event.key === "ArrowRight") {
-        dynamicRec.goRight();
-    } else if (event.key === "ArrowLeft") {
-        dynamicRec.goLeft();
-    }
+const render = () => {
     clearCtx();
     drawLine();
     staticRec.draw();
     dynamicRec.draw();
+}
+
+render();
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === "ArrowDown") {
+        staticRec.goDown();
+    } else if (event.key === "ArrowUp") {
+        staticRec.goUp();
+    } else if (event.key === "ArrowRight") {
+        staticRec.goRight();
+    } else if (event.key === "ArrowLeft") {
+        staticRec.goLeft();
+    }
+    render();
+});
+
+let gotIt = false;
+canvas.addEventListener('mousedown', (event) => {
+    let x = event.x;
+    let y = event.y;
+    if ((dynamicRec.x <= x && x <= dynamicRec.downX()) && (dynamicRec.y <= y && y <= dynamicRec.downY())) {
+        gotIt = true;
+        console.log("yeap");
+    } else {
+        gotIt = false;
+    }
+});
+
+canvas.addEventListener('mouseup', () => {
+   gotIt = false; 
+});
+
+canvas.addEventListener('mousemove', (event) => {
+    if (gotIt) {
+        dynamicRec.moveTo(event.x, event.y);
+        render();
+    }
 });

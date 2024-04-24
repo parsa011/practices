@@ -40,9 +40,7 @@ class Rectangle {
     }
 
     goRight() {
-        if (this.downX() < this.canvas.width) {
-            this.moveTo(this.x + 1, this.y);
-        }
+        this.moveTo(this.x + 1, this.y);
     }
 
     goLeft() {
@@ -66,10 +64,18 @@ class Rectangle {
         this.ctx.fillRect(this.x, this.y , this.width, this.height);
     }
 
+    isValidX(x) {
+        return x > 0 && x < this.canvas.width;
+    }
+
+    isValidY(y) {
+        return y > 0 && y < this.canvas.height;
+    }
+
     moveTo(x, y) {
-        this.clear();
-        this.x = x;
-        this.y = y;
-        this.draw();
+        if (this.isValidX(x) && this.isValidY(y)) {
+            this.x = x;
+            this.y = y;
+        }
     }
 }
