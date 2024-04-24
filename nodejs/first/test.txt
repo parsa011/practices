@@ -1,0 +1,4 @@
+hello
+how you doing
+this is new text file
+bla bla bla

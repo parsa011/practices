@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
     }
     do {
         lex();
-		printf("%d %s\n", lookahead, Token_name[token.type]);
+	printf("%d %s\n", lookahead, Token_name[token.type]);
     } while (token.type != T_EOF);
 	printf("INT MAX : %ld\n", LONG_MAX);
     return 0;

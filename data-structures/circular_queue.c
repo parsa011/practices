@@ -28,8 +28,8 @@ void cq_enqueue(struct circular_queue *queue, int val)
 	if (next_rear == queue->front) {
 		printf("Queue Is Full\n");
 	} else {
-		queue->data[queue->rear] = val;
 		queue->rear = next_rear;
+		queue->data[queue->rear] = val;
 		queue->total_enqueue++;
 		queue->in_queue++;
 	}
@@ -60,10 +60,6 @@ int main()
 {
 	struct circular_queue my_queue;
 	cq_init(&my_queue, 10);
-
-	int deq = 0;
-		cq_dequeue(&my_queue, &deq);
-
 
 	cq_print(&my_queue);
 	return 0;

@@ -6,6 +6,7 @@ obj/
 src/.deps
 dist/
 autom4te.cache/
+node_modules/
 tags
 TAGS
 .vscode/

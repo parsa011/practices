@@ -757,11 +757,10 @@ int main(int argc, char **argv)
 	lexer.lineno = 1;
 	init_variables_table();
 	set_program_mode(argc, argv);
-	lex();
-	//while (c_token.type != T_EOI) {
-	//	print_c_token();
-	//	lex();
-	//}
+	while (c_token.type != T_EOI) {
+		print_c_token();
+		lex();
+	}
 	statements();
 	return 0;
 }

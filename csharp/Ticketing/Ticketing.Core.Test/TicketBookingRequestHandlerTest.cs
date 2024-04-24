@@ -68,7 +68,7 @@ namespace Ticketing.Core.Test
             Assert.Equal(savedBooking.Name, _request.Name);
             Assert.Equal(savedBooking.Family, _request.Family);
             Assert.Equal(savedBooking.Email, _request.Email);
-            Assert.Equal(savedBooking.TicketId, _availableTickets.First().Id);
+            Assert.Equal(savedBooking.TicketID, _availableTickets.First().Id);
         }
 
         [Fact]
@@ -107,7 +107,7 @@ namespace Ticketing.Core.Test
                 _ticketBookingServiceMock
                     .Setup(x => x.Save(It.IsAny<TicketBooking>()))
                     .Callback<TicketBooking>(booking => {
-                        booking.TicketId = ticketBookingId.Value;
+                        booking.TicketID = ticketBookingId.Value;
                     });
             }
             var request = _handler.BookService(_request);

@@ -6,7 +6,7 @@ using Ticketing.Persistence.Interfaces;
 
 namespace Ticketing.Core.Handlers
 {
-    public class TicketBookingRequestHandler
+    public class TicketBookingRequestHandler : ITicketBookingRequestHandler
     {
         private readonly ITicketBookingService _ticketBookingService;
         public TicketBookingRequestHandler(ITicketBookingService bookingService)
@@ -21,19 +21,19 @@ namespace Ticketing.Core.Handlers
                 throw new ArgumentNullException(nameof(request));
             }
 
-			var availableTickets = _ticketBookingService.GetAvailableTicket(request.Date);
+            var availableTickets = _ticketBookingService.GetAvailableTicket(request.Date);
             var result = CreateTicketBookingObject<ServiceBookingResult>(request);
             result.Flag = BookingResultFlag.Failure;
-			if (availableTickets.Any())
-			{
+            if (availableTickets.Any())
+            {
                 var ticket = availableTickets.First();
                 var ticketBooking = CreateTicketBookingObject<TicketBooking>(request);
-                ticketBooking.TicketId = ticket.Id;
-				_ticketBookingService.Save(ticketBooking);
+                ticketBooking.TicketID = ticket.Id;
+                _ticketBookingService.Save(ticketBooking);
                 result.Flag = BookingResultFlag.Success;
-                result.TicketBookingId = ticket.Id; 
-			}
-            return result; 
+                result.TicketBookingId = ticket.Id;
+            }
+            return result;
         }
 
         private static TTicketBooking CreateTicketBookingObject<TTicketBooking>(TicketBookingRequest request) 

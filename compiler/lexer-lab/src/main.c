@@ -3,5 +3,7 @@
 int main(int argc, char **argv)
 {
 	printf("Working\n");
-	return 0;
+    char *name = "parsa";
+    puts(name);
+    return 0;
 }
