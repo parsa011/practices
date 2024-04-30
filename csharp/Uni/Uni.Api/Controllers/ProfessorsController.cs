@@ -12,4 +12,10 @@ public class RestaurantController(IProfessorsService professorsService) : Contro
     {
         return Ok(await professorsService.GetAllAsync());
     }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        return Ok(await professorsService.GetByIdAsync(id));
+    }
 }

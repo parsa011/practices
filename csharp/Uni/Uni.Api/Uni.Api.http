@@ -4,3 +4,6 @@ GET {{url}}/api/Professors
 Accept: application/json
 
 ###
+
+GET {{url}}/api/Professors/9
+Accept: application/json

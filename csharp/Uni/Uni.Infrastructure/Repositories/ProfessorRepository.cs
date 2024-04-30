@@ -11,4 +11,9 @@ internal class ProfessorRepository(UniContext context) : IProfessorRepository
     {
         return await context.Professors.ToListAsync();
     }
+
+    public async Task<Professor?> GetByIdAsync(int id)
+    {
+        return await context.Professors.FirstOrDefaultAsync(a => a.Id == id);
+    }
 }

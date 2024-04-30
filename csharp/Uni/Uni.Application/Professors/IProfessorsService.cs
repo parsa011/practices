@@ -5,4 +5,5 @@ namespace Uni.Application.Professors;
 public interface IProfessorsService
 {
     Task<IEnumerable<Professor>> GetAllAsync();
+    Task<Professor?> GetByIdAsync(int id);
 }
