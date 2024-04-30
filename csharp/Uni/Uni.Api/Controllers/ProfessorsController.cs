@@ -1,14 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
+using Uni.Application.Professors;
 
 namespace Uni.Api;
 
 [ApiController]
 [Route("api/Professors")]
-public class RestaurantController : ControllerBase
+public class RestaurantController(IProfessorsService professorsService) : ControllerBase
 {
     [HttpGet]
-    public IActionResult GetAll()
+    public async Task<IActionResult> GetAll()
     {
-        
+        return Ok(await professorsService.GetAllAsync());
     }
 }

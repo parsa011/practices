@@ -1,10 +1,17 @@
+using Microsoft.Extensions.Logging;
 using Uni.Domain.Entities;
+using Uni.Domain.Repositories;
 
-namespace Uni.Application.Professor;
+namespace Uni.Application.Professors;
 
-public class ProfessorsService
+public class ProfessorsService(
+    IProfessorRepository professorRepository,
+    ILogger<ProfessorsService> logger
+) : IProfessorsService
 {
-    public Task<IEnumerable<Professor>> GetAllProfessors()
+    public async Task<IEnumerable<Professor>> GetAllAsync()
     {
+        logger.LogInformation("Getting all Professors");
+        return await professorRepository.GetAllAsync();
     }
 }
