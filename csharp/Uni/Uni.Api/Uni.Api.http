@@ -1,0 +1,6 @@
+@url = http://localhost:5216
+
+GET {{url}}/Professors/parsa
+Accept: application/json
+
+###
