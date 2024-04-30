@@ -1,9 +1,9 @@
-using Uni.Domain.Entities;
+using Uni.Application.Professors.Dtos;
 
 namespace Uni.Application.Professors;
 
 public interface IProfessorsService
 {
-    Task<IEnumerable<Professor>> GetAllAsync();
-    Task<Professor?> GetByIdAsync(int id);
+    Task<IEnumerable<ProfessorDto>> GetAllAsync();
+    Task<ProfessorDto?> GetByIdAsync(int id);
 }

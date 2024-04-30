@@ -8,6 +8,7 @@ public static class ServiceCollectionExtenstion
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddScoped<IProfessorsService, ProfessorsService>();
+        services.AddAutoMapper(typeof(ServiceCollectionExtenstion).Assembly);
         return services;
     }
 }

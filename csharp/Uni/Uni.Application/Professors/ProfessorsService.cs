@@ -1,23 +1,25 @@
+using AutoMapper;
 using Microsoft.Extensions.Logging;
-using Uni.Domain.Entities;
+using Uni.Application.Professors.Dtos;
 using Uni.Domain.Repositories;
 
 namespace Uni.Application.Professors;
 
 public class ProfessorsService(
     IProfessorRepository professorRepository,
-    ILogger<ProfessorsService> logger
+    ILogger<ProfessorsService> logger,
+    IMapper mapper
 ) : IProfessorsService
 {
-    public async Task<IEnumerable<Professor>> GetAllAsync()
+    public async Task<IEnumerable<ProfessorDto>> GetAllAsync()
     {
         logger.LogInformation("Getting all Professors");
-        return await professorRepository.GetAllAsync();
+        return (await professorRepository.GetAllAsync()).Select(a => mapper.Map<ProfessorDto>(a))!;
     }
 
-    public async Task<Professor?> GetByIdAsync(int id)
+    public async Task<ProfessorDto?> GetByIdAsync(int id)
     {
         logger.LogInformation("Get Professor By Id");
-        return await professorRepository.GetByIdAsync(id);
+        return mapper.Map<ProfessorDto>(await professorRepository.GetByIdAsync(id));
     }
 }
