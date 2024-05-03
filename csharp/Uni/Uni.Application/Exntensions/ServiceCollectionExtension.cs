@@ -9,8 +9,10 @@ public static class ServiceCollectionExtenstion
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        services.AddScoped<IProfessorsService, ProfessorsService>();
         var applicationAssembly = typeof(ServiceCollectionExtenstion).Assembly;
+        services.AddMediatR(options => {
+            options.RegisterServicesFromAssembly(applicationAssembly);
+        });
         services.AddAutoMapper(applicationAssembly);
         services
             .AddValidatorsFromAssembly(applicationAssembly)

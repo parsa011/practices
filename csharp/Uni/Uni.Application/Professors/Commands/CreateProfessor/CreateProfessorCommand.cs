@@ -1,6 +1,8 @@
-namespace Uni.Application.Professors.Dtos;
+using MediatR;
 
-public class ProfessorCreateDto
+namespace Uni.Application.Professors.Commands.CreateProfessor;
+
+public class CreateProfessorCommand : IRequest<int>
 {
     public string Name { get; set; } = default!;
     public string LastName { get; set; } = default!;

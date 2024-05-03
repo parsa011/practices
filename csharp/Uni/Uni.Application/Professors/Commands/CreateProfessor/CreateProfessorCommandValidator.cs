@@ -1,10 +1,11 @@
 using FluentValidation;
+using Uni.Application.Professors.Commands.CreateProfessor;
 
 namespace Uni.Application.Professors.Dtos.Validators;
 
-public class ProfessorCreateDtoValidator : AbstractValidator<ProfessorCreateDto>
+public class CreateProfessorCommandValidator : AbstractValidator<CreateProfessorCommand>
 {
-    public ProfessorCreateDtoValidator()
+    public CreateProfessorCommandValidator()
     {
         RuleFor(a => a.Name)
             .NotEmpty()

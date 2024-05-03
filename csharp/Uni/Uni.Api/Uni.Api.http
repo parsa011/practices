@@ -14,7 +14,7 @@ POST {{url}}/api/Professors
 Content-Type: application/json
 
 {
-    "name": "jr",
+    "name": "jafar",
     "lastName": "hosseini",
     "email": "jafar@gmail.com",
     "city": "sari",
