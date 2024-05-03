@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Uni.Application.Professors.Dtos;
+using Uni.Domain.Entities;
 using Uni.Domain.Repositories;
 
 namespace Uni.Application.Professors;
@@ -21,5 +22,11 @@ public class ProfessorsService(
     {
         logger.LogInformation("Get Professor By Id");
         return mapper.Map<ProfessorDto>(await professorRepository.GetByIdAsync(id));
+    }
+
+    public async Task<int> CreateAsync(ProfessorCreateDto professor)
+    {
+        logger.LogInformation("Creating new Professor");
+        return await professorRepository.CreateAsync(mapper.Map<Professor>(professor));
     }
 }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using uni.Infrastructure.Extenstions;
+using Uni.Api.Attribtues;
 using Uni.Application.Extension;
 using Uni.Infrastructure.Seeders;
 
@@ -12,6 +13,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddScoped<ValidationFilterAttribute>();
+builder.Services.Configure<ApiBehaviorOptions>(
+    options => options.SuppressModelStateInvalidFilter = true
+);
+
 
 var app = builder.Build();
 

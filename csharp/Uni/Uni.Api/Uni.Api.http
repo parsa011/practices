@@ -7,3 +7,16 @@ Accept: application/json
 
 GET {{url}}/api/Professors/9
 Accept: application/json
+
+###
+
+POST {{url}}/api/Professors
+Content-Type: application/json
+
+{
+    "name": "jr",
+    "lastName": "hosseini",
+    "email": "jafar@gmail.com",
+    "city": "sari",
+    "street": "rahband"
+}

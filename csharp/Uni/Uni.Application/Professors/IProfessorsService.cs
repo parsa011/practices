@@ -6,4 +6,5 @@ public interface IProfessorsService
 {
     Task<IEnumerable<ProfessorDto>> GetAllAsync();
     Task<ProfessorDto?> GetByIdAsync(int id);
+    Task<int> CreateAsync(ProfessorCreateDto professor);
 }

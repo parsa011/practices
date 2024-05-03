@@ -10,5 +10,13 @@ public class ProfessorsProfile : Profile
         CreateMap<Professor, ProfessorDto>()
             .ForMember(a => a.City, opt => opt.MapFrom(b => b.Address.City))
             .ForMember(a => a.Street, opt => opt.MapFrom(b => b.Address.Street));
+
+        CreateMap<ProfessorCreateDto, Professor>()
+            .ForMember(a => a.Address, opt => opt.MapFrom(
+                src => new Address() {
+                    City = src.City,
+                    Street = src.Street
+                }
+            ));
     }
 }

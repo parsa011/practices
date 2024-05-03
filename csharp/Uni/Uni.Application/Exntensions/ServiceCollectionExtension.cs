@@ -1,3 +1,5 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 using Uni.Application.Professors;
 
@@ -8,7 +10,11 @@ public static class ServiceCollectionExtenstion
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddScoped<IProfessorsService, ProfessorsService>();
-        services.AddAutoMapper(typeof(ServiceCollectionExtenstion).Assembly);
+        var applicationAssembly = typeof(ServiceCollectionExtenstion).Assembly;
+        services.AddAutoMapper(applicationAssembly);
+        services
+            .AddValidatorsFromAssembly(applicationAssembly)
+            .AddFluentValidationAutoValidation();
         return services;
     }
 }
