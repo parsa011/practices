@@ -23,4 +23,17 @@ Content-Type: application/json
 
 ###
 
+PUT {{url}}/api/Professors/9
+Content-Type: application/json
+
+{
+    "name": "Parsa",
+    "lastName": "Mahmoudy",
+    "email": "Parsa@gmail.com",
+    "city": "Sari",
+    "street": "Qaem"
+}
+
+###
+
 DELETE {{url}}/api/Professors/30

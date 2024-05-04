@@ -17,9 +17,11 @@ public static class ServiceCollectionExtenstion
             options
                 .UseSqlServer(connectionString, config => {
                     config.EnableRetryOnFailure();
-                })
-                .EnableDetailedErrors();
-            options.EnableSensitiveDataLogging();
+                });
+            #if DEBUG
+                options.EnableDetailedErrors();
+                options.EnableSensitiveDataLogging();
+            #endif
         });
 
         services.AddScoped<IUniSeeder, UniSeeder>();

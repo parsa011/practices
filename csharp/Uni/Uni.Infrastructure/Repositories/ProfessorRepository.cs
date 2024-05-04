@@ -24,6 +24,12 @@ internal class ProfessorRepository(UniContext context) : IProfessorRepository
         return professor.Id;
     }
 
+    public async Task EditAsync(Professor professor)
+    {
+        context.Professors.Update(professor);
+        await context.SaveChangesAsync();
+    }
+
     public async Task Delete(Professor professor)
     {
         context.Professors.Remove(professor);

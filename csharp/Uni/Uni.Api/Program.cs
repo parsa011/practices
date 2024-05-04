@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
+using Serilog.Events;
 using uni.Infrastructure.Extenstions;
 using Uni.Api.Attribtues;
 using Uni.Application.Extension;
@@ -17,9 +19,13 @@ builder.Services.AddScoped<ValidationFilterAttribute>();
 builder.Services.Configure<ApiBehaviorOptions>(
     options => options.SuppressModelStateInvalidFilter = true
 );
-
+builder.Host.UseSerilog((context, configuration) => {
+    configuration
+        .ReadFrom.Configuration(context.Configuration);
+});
 
 var app = builder.Build();
+app.UseSerilogRequestLogging();
 
 var scope = app.Services.CreateScope();
 var seeder = scope.ServiceProvider.GetRequiredService<IUniSeeder>();

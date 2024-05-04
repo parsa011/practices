@@ -4,6 +4,7 @@ using Uni.Api.Attribtues;
 using Uni.Application.Professors;
 using Uni.Application.Professors.Commands.CreateProfessor;
 using Uni.Application.Professors.Commands.DeleteProfessor;
+using Uni.Application.Professors.Commands.EditProfessor;
 using Uni.Application.Professors.Dtos;
 using Uni.Application.Professors.Queries.GetAllProfessorsQuery;
 using Uni.Application.Professors.Queries.GetProfessorById;
@@ -35,12 +36,25 @@ public class RestaurantController(IMediator mediator) : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id }, null);
     }
 
+    [HttpPut("{id}")]
+    [ValidationFilter]
+    public async Task<IActionResult> Edit(int id, EditProfessorCommand professor)
+    {
+        professor.Id = id;
+        var edited = await mediator.Send(professor);
+        if (edited)
+        {
+            return Ok();
+        }
+        return NotFound();
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var isDeleted = await mediator.Send(new DeleteProfessorCommand(id));
+        var deleted = await mediator.Send(new DeleteProfessorCommand(id));
 
-        if (!isDeleted)
+        if (!deleted)
         {
             return NotFound();
         }
