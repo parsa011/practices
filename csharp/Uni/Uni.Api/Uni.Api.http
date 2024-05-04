@@ -20,3 +20,7 @@ Content-Type: application/json
     "city": "sari",
     "street": "rahband"
 }
+
+###
+
+DELETE {{url}}/api/Professors/30
