@@ -1,0 +1,104 @@
+
+*** These modified files were found in JOE when it aborted on Thu Sep 19 02:23:58 2024
+*** JOE was aborted by UNIX signal 1
+
+*** These modified files were found in JOE when it aborted on Thu Sep 19 02:23:58 2024
+*** JOE was aborted by UNIX signal 1
+
+*** File '(Unnamed)'
+
+*** File '(Unnamed)'
+/home/parsa/Desktop/practices/.git/COMMIT_EDITMSG
+* Startup Log *
+* Shell 1 *
+/home/parsa/Desktop/practices/.git/COMMIT_EDITMSG
+* Startup Log *
+* Shell 1 *
+
+*** File '/home/parsa/Desktop/practices/.git/COMMIT_EDITMSG'
+
+*** File '/home/parsa/Desktop/practices/.git/COMMIT_EDITMSG'
+solve some more problemssolve some more problems
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch main
+# Your branch is up to date with 'origin/main'.
+#
+# Changes to be committed:
+#	modified:   10230.cpp
+#	new file:   1359.cpp
+#	new file:   245889.cpp
+#	modified:   276.cpp
+#	new file:   280.cpp
+#	modified:   640.cpp
+#	new file:   655.cpp
+#
+# Untracked files:
+#	../c++/temp/
+#
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch main
+# Your branch is up to date with 'origin/main'.
+#
+# Changes to be committed:
+#	modified:   10230.cpp
+#	new file:   1359.cpp
+#	new file:   245889.cpp
+#	modified:   276.cpp
+#	new file:   280.cpp
+#	modified:   640.cpp
+#	new file:   655.cpp
+#
+# Untracked files:
+#	../c++/temp/
+#
+
+*** File '* Startup Log *'
+
+*** File '* Startup Log *'
+Processing '/etc/joe/editorrc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/editorrc
+Processing '/etc/joe/editorrc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/editorrc
+
+*** These modified files were found in JOE when it aborted on Thu Sep 19 02:23:58 2024
+*** JOE was aborted by UNIX signal 1
+
+*** File 'xit'
+
+
+*** File '* Shell 1 *'
+. /etc/joe/shell.sh
+Welcome to fish, the friendly interactive shell
+Type [32mhelp[m for instructions on how to use fish
+[32mparsa[m@pms [32m~/D/practices[m (main)> [34m.[m [36m/etc/joe/shell.sh[m
+/etc/joe/shell.sh (line 40): $* is not supported. In fish, please use $argv.
+	$*
+	 ^
+from sourcing file /etc/joe/shell.sh
+.: Error while reading file '/etc/joe/shell.sh'
+[32mparsa[m@pms [32m~/D/practices[m (main) [31m[[1m1[m[31m][m> [34mgit[m [36mcommit[m
+[7m    I    ~/Desktop/practices/.git/COMMIT_EDITMSG (git-commit)                                                                                                                                     Row 1    Col 1   
+
+[32m# Please enter the commit message for your changes. Lines starting
+[32m# with '#' will be ignored, and an empty message aborts the commit.
+[32mparsa[m@pms [32m~/D/practices[m (main)> [34mgit[m [36mcommit[m [36m-m[m [33m"[tty] : use 'system('clear')' instea of key sequence"[m
+*** File '(Unnamed)'
+/home/parsa/Desktop/practices/.git/COMMIT_EDITMSG
+* Startup Log *
+* Shell 1 *
+xit
+
+*** File '* Startup Log *'
+Processing '/etc/joe/editorrc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/editorrc
