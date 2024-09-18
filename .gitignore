@@ -4,6 +4,9 @@
 *.*~
 bin/
 obj/
+.vs
+.vscode
+.idea
 src/.deps
 dist/
 autom4te.cache/
