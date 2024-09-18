@@ -1,0 +1,92 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\parsa\\Desktop\\practices\\csharp\\CQRS\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{61C2CA7A-4C27-4690-9AA1-A2DBCCB55740}|CQRS.Application\\CQRS.Application.csproj|c:\\users\\parsa\\desktop\\practices\\csharp\\cqrs\\cqrs.application\\commands\\handlers\\addtraveleritemhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{61C2CA7A-4C27-4690-9AA1-A2DBCCB55740}|CQRS.Application\\CQRS.Application.csproj|solutionrelative:cqrs.application\\commands\\handlers\\addtraveleritemhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61C2CA7A-4C27-4690-9AA1-A2DBCCB55740}|CQRS.Application\\CQRS.Application.csproj|c:\\users\\parsa\\desktop\\practices\\csharp\\cqrs\\cqrs.application\\commands\\removetraveleritem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{61C2CA7A-4C27-4690-9AA1-A2DBCCB55740}|CQRS.Application\\CQRS.Application.csproj|solutionrelative:cqrs.application\\commands\\removetraveleritem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61C2CA7A-4C27-4690-9AA1-A2DBCCB55740}|CQRS.Application\\CQRS.Application.csproj|c:\\users\\parsa\\desktop\\practices\\csharp\\cqrs\\cqrs.application\\commands\\removetravelerchecklist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{61C2CA7A-4C27-4690-9AA1-A2DBCCB55740}|CQRS.Application\\CQRS.Application.csproj|solutionrelative:cqrs.application\\commands\\removetravelerchecklist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4B758A3E-99AF-4D64-AAB3-6E0CAB0317C4}|CQRS.Shared.Abstractions\\CQRS.Shared.Abstractions.csproj|c:\\users\\parsa\\desktop\\practices\\csharp\\cqrs\\cqrs.shared.abstractions\\commands\\icommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4B758A3E-99AF-4D64-AAB3-6E0CAB0317C4}|CQRS.Shared.Abstractions\\CQRS.Shared.Abstractions.csproj|solutionrelative:cqrs.shared.abstractions\\commands\\icommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{6324226f-61b6-4f28-92ee-18d4b5fe1e48}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "RemoveTravelerItem.cs",
+              "DocumentMoniker": "C:\\Users\\parsa\\Desktop\\practices\\csharp\\CQRS\\CQRS.Application\\Commands\\RemoveTravelerItem.cs",
+              "RelativeDocumentMoniker": "CQRS.Application\\Commands\\RemoveTravelerItem.cs",
+              "ToolTip": "C:\\Users\\parsa\\Desktop\\practices\\csharp\\CQRS\\CQRS.Application\\Commands\\RemoveTravelerItem.cs",
+              "RelativeToolTip": "CQRS.Application\\Commands\\RemoveTravelerItem.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-28T17:43:13.465Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "RemoveTravelerCheckList.cs",
+              "DocumentMoniker": "C:\\Users\\parsa\\Desktop\\practices\\csharp\\CQRS\\CQRS.Application\\Commands\\RemoveTravelerCheckList.cs",
+              "RelativeDocumentMoniker": "CQRS.Application\\Commands\\RemoveTravelerCheckList.cs",
+              "ToolTip": "C:\\Users\\parsa\\Desktop\\practices\\csharp\\CQRS\\CQRS.Application\\Commands\\RemoveTravelerCheckList.cs",
+              "RelativeToolTip": "CQRS.Application\\Commands\\RemoveTravelerCheckList.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-28T17:43:09.43Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ICommandHandler.cs",
+              "DocumentMoniker": "C:\\Users\\parsa\\Desktop\\practices\\csharp\\CQRS\\CQRS.Shared.Abstractions\\Commands\\ICommandHandler.cs",
+              "RelativeDocumentMoniker": "CQRS.Shared.Abstractions\\Commands\\ICommandHandler.cs",
+              "ToolTip": "C:\\Users\\parsa\\Desktop\\practices\\csharp\\CQRS\\CQRS.Shared.Abstractions\\Commands\\ICommandHandler.cs",
+              "RelativeToolTip": "CQRS.Shared.Abstractions\\Commands\\ICommandHandler.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-28T17:42:51.418Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AddTravelerItemHandler.cs",
+              "DocumentMoniker": "C:\\Users\\parsa\\Desktop\\practices\\csharp\\CQRS\\CQRS.Application\\Commands\\Handlers\\AddTravelerItemHandler.cs",
+              "RelativeDocumentMoniker": "CQRS.Application\\Commands\\Handlers\\AddTravelerItemHandler.cs",
+              "ToolTip": "C:\\Users\\parsa\\Desktop\\practices\\csharp\\CQRS\\CQRS.Application\\Commands\\Handlers\\AddTravelerItemHandler.cs",
+              "RelativeToolTip": "CQRS.Application\\Commands\\Handlers\\AddTravelerItemHandler.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABkAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-24T14:45:58.349Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

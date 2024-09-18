@@ -18,7 +18,7 @@
 //            if (*s++ != expect)
 //                if (!star)			/* this line means it should have this char */
 //                    return false;
-//                else {			/* if this was star but not repeated */ 
+//                else {			/* if this was star but not repeated */
 //                    s--;
 //                    break;
 //                }

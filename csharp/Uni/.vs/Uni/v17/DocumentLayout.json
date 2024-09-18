@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\parsa\\Desktop\\practices\\csharp\\Uni\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{2C368768-DDED-4359-9EBA-8575057458B5}|Uni.Api\\Uni.Api.csproj|c:\\users\\parsa\\desktop\\practices\\csharp\\uni\\uni.api\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{2C368768-DDED-4359-9EBA-8575057458B5}|Uni.Api\\Uni.Api.csproj|solutionrelative:uni.api\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2C368768-DDED-4359-9EBA-8575057458B5}|Uni.Api\\Uni.Api.csproj|c:\\users\\parsa\\desktop\\practices\\csharp\\uni\\uni.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{2C368768-DDED-4359-9EBA-8575057458B5}|Uni.Api\\Uni.Api.csproj|solutionrelative:uni.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{90EA80EB-5C08-4BE6-A855-8E9BE339B14F}|tests\\Uni.Domain.Tests\\Uni.Domain.Tests.csproj|c:\\users\\parsa\\desktop\\practices\\csharp\\uni\\tests\\uni.domain.tests\\unittest1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{90EA80EB-5C08-4BE6-A855-8E9BE339B14F}|tests\\Uni.Domain.Tests\\Uni.Domain.Tests.csproj|solutionrelative:tests\\uni.domain.tests\\unittest1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "C:\\Users\\parsa\\Desktop\\practices\\csharp\\Uni\\Uni.Api\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "Uni.Api\\appsettings.Development.json",
+              "ToolTip": "C:\\Users\\parsa\\Desktop\\practices\\csharp\\Uni\\Uni.Api\\appsettings.Development.json",
+              "RelativeToolTip": "Uni.Api\\appsettings.Development.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAIAAAArAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-05-10T11:35:25.634Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\parsa\\Desktop\\practices\\csharp\\Uni\\Uni.Api\\appsettings.json",
+              "RelativeDocumentMoniker": "Uni.Api\\appsettings.json",
+              "ToolTip": "C:\\Users\\parsa\\Desktop\\practices\\csharp\\Uni\\Uni.Api\\appsettings.json",
+              "RelativeToolTip": "Uni.Api\\appsettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-05-10T11:35:24.84Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "UnitTest1.cs",
+              "DocumentMoniker": "C:\\Users\\parsa\\Desktop\\practices\\csharp\\Uni\\tests\\Uni.Domain.Tests\\UnitTest1.cs",
+              "RelativeDocumentMoniker": "tests\\Uni.Domain.Tests\\UnitTest1.cs",
+              "ToolTip": "C:\\Users\\parsa\\Desktop\\practices\\csharp\\Uni\\tests\\Uni.Domain.Tests\\UnitTest1.cs",
+              "RelativeToolTip": "tests\\Uni.Domain.Tests\\UnitTest1.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-10T11:30:06.801Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
