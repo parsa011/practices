@@ -3,21 +3,18 @@
 
 using namespace std;
 
-void find_gcd(long a, long b, long current, long &gcd)
+long gcd(long u, long v)
 {
-    if (current > abs(a) || current > abs(b))
-        return;
-    if (a % current == 0 && b % current == 0)
-        gcd = current;
-    find_gcd(a, b, current + 1, gcd);
+	if (v == 0)
+		return u;
+	return gcd(v, u % v);
 }
 
 int main()
 {
     long a, b;
     cin >> a >> b;
-    long gcd = 0;
-    find_gcd(a, b, 1, gcd);
-    cout << gcd << endl;
+    long g = gcd(abs(a), abs(b));
+    cout << g << endl;
     return 0;
 }
